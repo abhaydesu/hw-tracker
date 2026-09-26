@@ -3,10 +3,12 @@
 import express from 'express';
 import { chromium } from 'playwright';
 import fs from 'fs';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
 
 const PORT = process.env.PORT || 3000;
 // DATA_DIR lets a second copy (e.g. for testing) run without touching your real data
-const DIR = process.env.DATA_DIR || new URL('.', import.meta.url).pathname;
+const DIR = process.env.DATA_DIR || dirname(fileURLToPath(import.meta.url));
 const DATA = `${DIR}/data.json`;
 const PROFILE = `${DIR}/.browser-profile`;
 const UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0 Safari/537.36';
@@ -249,7 +251,8 @@ async function resolvePlace(place) {
 // ---- HTTP API ----
 const app = express();
 app.use(express.json());
-app.use(express.static(new URL('./public', import.meta.url).pathname));
+const __dirname = dirname(fileURLToPath(import.meta.url));
+app.use(express.static(`${__dirname}/public`));
 const uid = () => Math.random().toString(36).slice(2, 9);
 const api = (fn) => (req, res) => Promise.resolve().then(() => fn(req, res)).catch(e => res.status(400).json({ error: e.message }));
 
