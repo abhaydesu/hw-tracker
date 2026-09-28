@@ -52,12 +52,19 @@ main{max-width:1240px;margin:auto;padding:16px;display:grid;gap:16px}
 .seg button{background:var(--surface);color:var(--mut);border-radius:0;padding:7px 11px;font-weight:600}
 .seg button.on{background:var(--fg);color:var(--bg)}
 .watchbar{display:flex;gap:6px;flex-wrap:wrap;align-items:center;padding:0 12px 12px}
-.chip{display:inline-flex;align-items:center;gap:2px;padding:3px 4px 3px 10px;border-radius:99px;border:1px solid var(--line);background:var(--surface2);font-size:13px}
+.chip{display:inline-flex;align-items:center;gap:2px;padding:3px 4px 3px 10px;border-radius:99px;border:1px solid var(--line);background:var(--surface2);font-size:13px;cursor:default}
 .chip.star{border-color:color-mix(in srgb,var(--star) 50%,transparent)}
 .chip button{padding:0 6px;background:none;color:var(--mut);font-weight:400}
 .addchip{display:inline-flex}.addchip input{padding:4px 10px;border-radius:99px 0 0 99px;font-size:13px;width:170px}
 .addchip button{border-radius:0 99px 99px 0;padding:4px 10px;font-size:13px}
 .meta{padding:0 12px 10px;font-size:12px;color:var(--mut)}
+
+/* source filter chips */
+.src-chip{cursor:pointer;transition:background .12s,border-color .12s}
+.src-chip:hover{background:var(--line)}
+.src-chip.on{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.src-chip .src-ct{font-size:11px;padding:1px 6px;border-radius:99px;background:rgba(0,0,0,.1);margin-left:2px}
+.src-chip.on .src-ct{background:rgba(255,255,255,.2)}
 
 /* grid */
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px;padding:0 12px 12px}
@@ -72,12 +79,17 @@ main{max-width:1240px;margin:auto;padding:16px;display:grid;gap:16px}
 .badges{position:absolute;top:6px;left:6px;display:flex;gap:4px;flex-direction:column;align-items:flex-start}
 .b{font-size:10px;font-weight:800;letter-spacing:.04em;padding:2px 7px;border-radius:5px;text-transform:uppercase}
 .b.new{background:#7a2cf5;color:#fff}.b.off{background:#256fef;color:#fff}.b.sold{background:#344054;color:#fff}
+.b.src{font-weight:700;letter-spacing:0;text-transform:none;font-size:11px}
 .body{padding:10px;display:flex;flex-direction:column;gap:4px;flex:1}
 .name{font-weight:600;font-size:13px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;text-decoration:none;min-height:2.9em}
 .name:hover{text-decoration:underline}
 .price{display:flex;gap:6px;align-items:baseline}.price b{font-size:15px}.price s{color:var(--mut);font-size:12px}
-.where{display:flex;gap:4px;flex-wrap:wrap}.loc{font-size:11px;padding:1px 7px;border-radius:99px;background:var(--okbg);color:var(--ok);font-weight:600}.loc.x{background:var(--surface2);color:var(--mut);text-decoration:line-through;font-weight:400}
-.body .act{margin-top:auto;padding-top:6px;display:flex;gap:6px}.act button{flex:1;padding:8px}
+.where{display:flex;gap:4px;flex-wrap:wrap;margin-top:2px}
+.loc{font-size:11px;padding:1px 7px;border-radius:99px;background:var(--okbg);color:var(--ok);font-weight:600}
+.loc.x{background:var(--surface2);color:var(--mut);text-decoration:line-through;font-weight:400}
+.body .act{margin-top:auto;padding-top:6px;display:flex;gap:6px}.act button,.act a.abtn{flex:1;padding:8px;text-align:center;text-decoration:none;font-weight:600;font-size:14px;border-radius:8px;display:inline-block}
+a.abtn{background:var(--surface2);color:var(--fg);border:1px solid var(--line);transition:filter .15s}
+a.abtn:hover{filter:brightness(.95)}
 .act .added{background:var(--okbg);color:var(--ok)}
 .empty{padding:40px 16px;text-align:center;color:var(--mut)}
 .skel{height:300px;border-radius:10px;background:linear-gradient(90deg,var(--surface2),var(--line),var(--surface2));background-size:200% 100%;animation:sh 1.2s infinite}
@@ -89,6 +101,10 @@ main{max-width:1240px;margin:auto;padding:16px;display:grid;gap:16px}
 .hero .row{max-width:560px;margin:auto}
 .row{display:flex;gap:8px;flex-wrap:wrap}.row>input{flex:1 1 180px}
 
+/* layout */
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:16px;align-items:start}
+@media (max-width:900px){.layout{grid-template-columns:1fr}}
+.log-panel{position:sticky;top:76px;display:flex;flex-direction:column;height:calc(100vh - 100px);}
 /* drawer */
 .scrim{position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:9;opacity:0;pointer-events:none;transition:opacity .2s}
 .drawer{overflow-x:hidden;position:fixed;top:0;right:0;bottom:0;width:min(420px,100%);background:var(--surface);z-index:10;transform:translateX(100%);transition:transform .22s;overflow-y:auto;border-left:1px solid var(--line)}
@@ -119,14 +135,18 @@ details summary{cursor:pointer;color:var(--mut);font-size:12px}
   <div class="scrim" onclick="drawer(false)"></div>
   <aside class="drawer" aria-label="Setup">
     <header><h3>Setup</h3><button class="icon" onclick="drawer(false)" aria-label="Close">✕</button></header>
-    <div class="sec"><h4>Locations</h4>
+
+    <div class="sec"><h4>Data Sources</h4>
+      <div id="sourcesList" style="display:grid;grid-template-columns:minmax(0,1fr);gap:10px"></div>
+    </div>
+
+    <div class="sec"><h4>Locations <span class="sm mut">(for Blinkit)</span></h4>
       <div id="locList" style="display:grid;grid-template-columns:minmax(0,1fr);gap:6px"></div>
       <div class="row"><input type="text" id="dPlace" placeholder="Pincode, address, coords or Maps link" onkeydown="event.key==='Enter'&&addLoc('d')"></div>
       <div class="row"><input type="text" id="dName" placeholder="Name, e.g. Home" onkeydown="event.key==='Enter'&&addLoc('d')"><button id="dAdd" onclick="addLoc('d')">Add</button><button class="ghost" onclick="geo('dPlace')" title="Use my current location">📍</button></div>
       <details><summary>Pincode or exact spot?</summary><p class="sm mut">A pincode works, but Blinkit stock depends on the store nearest your exact address. Right-click your home in Google Maps, click the coordinates to copy them, and paste here.</p></details>
     </div>
-    <div class="sec"><h4>Checking</h4>
-      <div class="row" style="align-items:center">Every <select id="iv" onchange="saveInterval()"></select></div>
+    <div class="sec"><h4>Alerts</h4>
       <label class="switch"><input type="checkbox" id="notifChk" onchange="enableNotifs()"><span>Desktop alerts + sound<br><span class="sm mut">Needs this tab to stay open.</span></span></label>
     </div>
     <div class="sec"><h4>Cart &amp; ordering</h4>
@@ -148,8 +168,10 @@ const ago=t=>{if(!t)return'never';const s=Math.round((Date.now()-t)/1000);return
 const NEW_MS=6*3600e3;
 
 let S=null,firstLoad=true,busy=new Set();
-const ui=ls.get('ui',{tab:'all',stock:'in',sort:'smart',q:''});
-const saveUi=()=>ls.set('ui',{...ui,q:''});
+const ui=ls.get("ui",{tab:"all",stock:"in",sort:"smart",q:"",src:"all"});
+const saveUi=()=>ls.set("ui",{...ui,q:""});
+const emojiMap = { blinkit:"🟢", hamleys:"🔴", firstcry:"🟣", amazon:"🟠", funcorp:"🔵", crossword:"📗" };
+const srcColors = { blinkit:"#f8cb46", hamleys:"#c62828", firstcry:"#7b1fa2", amazon:"#ff9800", funcorp:"#1565c0", crossword:"#2e7d32" };
 let alerted=new Set(ls.get('alerted',[]));
 
 function toast(m,err){const t=$('toast');t.textContent=m;t.className='show'+(err?' err':'');clearTimeout(t._h);t._h=setTimeout(()=>t.className='',3500)}
@@ -169,20 +191,19 @@ async function addLoc(p){
   finally{btn.disabled=false;btn.textContent=t}}
 function geo(id){if(!navigator.geolocation)return toast('Location not available in this browser',true);
   toast('Getting your location…');
-  navigator.geolocation.getCurrentPosition(p=>{$(id).value=p.coords.latitude.toFixed(5)+', '+p.coords.longitude.toFixed(5);toast('Got it — now click Add')},e=>toast('Couldn’t get location: '+e.message,true),{enableHighAccuracy:true,timeout:10000})}
-function removeLoc(id,name){if(confirm(`Stop watching “${name}”?`))del('/api/locations/'+id).then(()=>{if(ui.tab===id)ui.tab='all'})}
-function saveInterval(){post('/api/settings',{intervalSec:+$('iv').value}).then(()=>toast('Saved'))}
-function checkNow(){post('/api/check').then(()=>toast('Checking all locations…'))}
+  navigator.geolocation.getCurrentPosition(p=>{$(id).value=p.coords.latitude.toFixed(5)+', '+p.coords.longitude.toFixed(5);toast('Got it — now click Add')},e=>toast('Couldn\'t get location: '+e.message,true),{enableHighAccuracy:true,timeout:10000})}
+function removeLoc(id,name){if(confirm(`Stop watching "${name}"?`))del('/api/locations/'+id).then(()=>{if(ui.tab===id)ui.tab='all'})}
+function checkNow(){post('/api/check').then(()=>toast('Checking all sources…'))}
 function openCart(){toast('Opening Blinkit…');post('/api/browser/cart').then(()=>toast('Blinkit opened in a new window'))}
-async function enableNotifs(){if(!('Notification'in window))return toast('Notifications aren’t supported here',true);
+async function enableNotifs(){if(!('Notification'in window))return toast('Notifications aren\'t supported here',true);
   const p=await Notification.requestPermission();toast(p==='granted'?'Alerts on':'Alerts blocked — allow them in browser settings',p!=='granted');render()}
 
 // ★ watching: star a product to watch its model name
 const modelName=n=>n.replace(/hot\s*wheels/i,'').replace(/\b(die[\s-]*cast|toy)\b.*$/i,'').replace(/\s+/g,' ').trim()||n;
 async function toggleWatch(name,watched){
-  if(watched){const m=S.models.find(m=>m.text===watched);if(m)await del('/api/models/'+m.id);toast(`Stopped watching “${watched}”`)}
-  else{const t=modelName(name);await post('/api/models',{text:t});toast(`★ Watching “${t}”${S.settings.autoCart?' — will auto-add to cart':''}`)}}
-function addModel(){const i=$('mAdd');if(!i.value.trim())return;post('/api/models',{text:i.value}).then(()=>{toast(`★ Watching “${i.value.trim()}”`);i.value=''})}
+  if(watched){const m=S.models.find(m=>m.text===watched);if(m)await del('/api/models/'+m.id);toast(`Stopped watching "${watched}"`)}
+  else{const t=modelName(name);await post('/api/models',{text:t});toast(`★ Watching "${t}"${S.settings.autoCart?' — will auto-add to cart':''}`)}}
+function addModel(){const i=$('mAdd');if(!i.value.trim())return;post('/api/models',{text:i.value}).then(()=>{toast(`★ Watching "${i.value.trim()}"`);i.value=''})}
 
 async function cart(locationId,productId){
   const k=locationId+':'+productId;busy.add(k);render();
@@ -191,54 +212,124 @@ async function cart(locationId,productId){
 
 function beep(){try{const a=new AudioContext();[0,.18].forEach(d=>{const o=a.createOscillator(),g=a.createGain();o.connect(g);g.connect(a.destination);o.frequency.value=d?1175:880;g.gain.value=.12;o.start(a.currentTime+d);o.stop(a.currentTime+d+.15)})}catch{}}
 
-// merge products across locations for the “All” tab
-function items(){
-  const locs=ui.tab==='all'?S.locations:S.locations.filter(l=>l.id===ui.tab);
-  const map=new Map();
-  for(const l of locs)for(const p of S.results[l.id]?.products||[]){
-    let it=map.get(p.id);if(!it)map.set(p.id,it={...p,at:[],inStock:false,since:null});
-    it.at.push({loc:l,inStock:p.inStock});
-    if(p.inStock){it.inStock=true;it.since=Math.max(it.since||0,p.since||0)||null;it.state='available'}
-    it.price=Math.min(it.price,p.price)}
-  return [...map.values()]}
+// Build item list: merge Blinkit locations + other sources
+function items() {
+  const map = new Map();
+  // Blinkit location-based results
+  const locs = ui.tab === 'all' ? S.locations : S.locations.filter(l => l.id === ui.tab);
+  for (const l of locs) {
+    for (const p of S.results[l.id]?.products || []) {
+      const key = 'blinkit:' + p.id;
+      let it = map.get(key);
+      if (!it) map.set(key, it = {...p, source:'blinkit', at: [], inStock: false, since: null});
+      it.at.push({loc: l, inStock: p.inStock, source:'blinkit'});
+      if (p.inStock) { it.inStock = true; it.since = Math.max(it.since||0, p.since||0)||null; it.state = 'available'; }
+      it.price = Math.min(it.price, p.price);
+    }
+  }
+  // Other sources (only shown on "All" tab since they're not location-specific)
+  if (ui.tab === 'all') {
+    for (const src of (S.sourcesArr || []).filter(s => s.id !== 'blinkit')) {
+      for (const p of S.results[src.id]?.products || []) {
+        const key = src.id + ':' + p.id;
+        let it = map.get(key);
+        if (!it) map.set(key, it = {...p, source: src.id, at: [], inStock: false, since: null});
+        it.at.push({loc: {id: src.id, name: src.name}, inStock: p.inStock, source: src.id});
+        if (p.inStock) { it.inStock = true; it.since = Math.max(it.since||0, p.since||0)||null; it.state = 'available'; }
+        it.price = Math.min(it.price, p.price);
+      }
+    }
+  }
+  return [...map.values()];
+}
+
+// Count items per source (always from "all" perspective)
+function srcCounts() {
+  const counts = {};
+  for (const l of S.locations) {
+    const prods = S.results[l.id]?.products || [];
+    counts.blinkit = (counts.blinkit || 0) + prods.filter(p => p.inStock).length;
+  }
+  for (const src of (S.sourcesArr || []).filter(s => s.id !== 'blinkit')) {
+    const prods = S.results[src.id]?.products || [];
+    counts[src.id] = prods.filter(p => p.inStock).length;
+  }
+  return counts;
+}
 
 function render(){
   if(!S)return;
   const main=$('main'),focusId=document.activeElement?.id,selS=document.activeElement?.selectionStart;
+
   // header status
-  const errs=S.locations.filter(l=>S.results[l.id]?.error).length;
-  const next=S.nextRun?Math.max(0,Math.round((S.nextRun-Date.now())/1000)):null;
-  $('status').innerHTML=S.checking?'<span class="dot busy"></span>Checking…':
-    `<span class="dot ${errs?'err':''}"></span>${errs?errs+' failed · ':''}${S.locations.length?`Next check ${next>=60?Math.round(next/60)+'m':next+'s'}`:'Idle'}`;
-  $('checkBtn').disabled=S.checking||!S.locations.length;
+  const anyChecking = (S.sourcesArr||[]).some(s=>s.checking);
+  const locErrs=S.locations.filter(l=>S.results[l.id]?.error).length;
+  const srcErrs=(S.sourcesArr||[]).filter(s=>s.error).length;
+  const totalErrs=locErrs+srcErrs;
+  const nextRunVals = (S.sourcesArr||[]).filter(s=>s.nextRun).map(s=>Math.max(0,Math.round((s.nextRun-Date.now())/1000)));
+  const next = nextRunVals.length ? Math.min(...nextRunVals) : null;
+  $('status').innerHTML=anyChecking?'<span class="dot busy"></span>Checking…':
+    `<span class="dot ${totalErrs?'err':''}"></span>${totalErrs?totalErrs+' failed · ':''}${next !== null ? `Next check ${next>=60?Math.round(next/60)+'m':next+'s'}` : 'Idle'}`;
+  $('checkBtn').disabled=anyChecking||!S.locations.length;
   const perm='Notification'in window?Notification.permission:'denied';
   $('notif').hidden=perm!=='default';$('notifChk').checked=perm==='granted';$('notifChk').disabled=perm==='denied';
-  if(!$('iv').options.length){for(const [v,t] of [[30,'30 seconds'],[60,'1 minute'],[120,'2 minutes'],[300,'5 minutes'],[600,'10 minutes'],[1800,'30 minutes']])$('iv').add(new Option(t,v))}
-  if(![...$('iv').options].some(o=>+o.value===S.settings.intervalSec))$('iv').add(new Option(S.settings.intervalSec+' seconds',S.settings.intervalSec));
-  $('iv').value=S.settings.intervalSec;$('ac').checked=S.settings.autoCart;
+  $('ac').checked=S.settings.autoCart;
   $('locList').innerHTML=S.locations.map(l=>`<div class="locrow"><div><b>${esc(l.name)}</b><div class="sm mut" title="${esc(l.label)}">${esc(l.label||l.lat+', '+l.lon)}</div></div><button class="icon" onclick="removeLoc('${l.id}','${esc(l.name).replace(/'/g,"\\'")}')" aria-label="Remove">🗑</button></div>`).join('')||'<span class="sm mut">No locations yet.</span>';
   const lg=$('log'),top=lg.scrollTop<5;lg.textContent=S.log.join('\n')||'Nothing yet.';if(top)lg.scrollTop=0;
+  const mlg=$('mainLog'); if(mlg){ const mtop=mlg.scrollTop<5; mlg.textContent=S.log.join('\n')||'Nothing yet.'; if(mtop)mlg.scrollTop=0; }
+
+  // Drawer: sources list
+  $('sourcesList').innerHTML = (S.sourcesArr||[]).map(s => `
+    <div style="border:1px solid var(--line); padding:10px; border-radius:8px">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px">
+        <b>${s.emoji} ${s.name}</b>
+        <label class="switch"><input type="checkbox" ${s.enabled?'checked':''} onchange="post('/api/sources/${s.id}/settings',{enabled:this.checked})"><span></span></label>
+      </div>
+      <div class="row" style="align-items:center">
+        <span class="sm mut">Check every:</span>
+        <select class="sm" onchange="post('/api/sources/${s.id}/settings',{intervalSec:this.value})">
+          <option value="120" ${s.intervalSec===120?'selected':''}>2 mins</option>
+          <option value="900" ${s.intervalSec===900?'selected':''}>15 mins</option>
+          <option value="1800" ${s.intervalSec===1800?'selected':''}>30 mins</option>
+          <option value="3600" ${s.intervalSec===3600?'selected':''}>1 hr</option>
+          <option value="21600" ${s.intervalSec===21600?'selected':''}>6 hrs</option>
+        </select>
+        <button class="ghost sm" onclick="post('/api/sources/${s.id}/check')">↻ Check</button>
+      </div>
+      <div class="sm mut" style="margin-top:4px">${s.checking?'Checking...':(s.lastRun?'Last checked: '+ago(s.lastRun):'Never checked')}${s.error?' (⚠️ Error)':''}</div>
+    </div>
+  `).join('');
 
   // onboarding
   if(!S.locations.length){
     main.innerHTML=`<section class="hero"><div style="font-size:44px">🏎️</div><h2>Where should I look?</h2>
-      <p>Add your delivery location. I’ll keep checking Blinkit for Hot Wheels there and tell you the moment something you want is in stock.</p>
+      <p>Add your delivery location. I'll keep checking Blinkit for Hot Wheels there and tell you the moment something you want is in stock.</p>
       <div class="row"><input type="text" id="hPlace" placeholder="Pincode, address, or coordinates" onkeydown="event.key==='Enter'&&addLoc('h')" autofocus>
       <input type="text" id="hName" placeholder="Name (e.g. Home)" style="flex:0 1 150px" onkeydown="event.key==='Enter'&&addLoc('h')"></div>
       <div class="row" style="justify-content:center;margin-top:10px"><button id="hAdd" onclick="addLoc('h')">Start watching</button><button class="ghost" onclick="geo('hPlace')">📍 Use my location</button></div>
-      <p class="sm" style="margin-top:14px">Tip: exact coordinates beat a pincode — stock depends on the nearest Blinkit store.</p></section>`;
+      <p class="sm" style="margin-top:14px">Tip: exact coordinates beat a pincode — stock depends on the nearest Blinkit store.</p></section>
+  </div><!--/main-col-->
+  <aside class="panel log-panel"><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;"><h4 style="margin:0;font-size:13px;text-transform:uppercase;letter-spacing:.04em;color:var(--mut);">Activity</h4><span class="sm mut">Live</span></div><pre id="mainLog" style="margin:0;flex:1;overflow:auto;font:12px/1.6 ui-monospace,Menlo,monospace;white-space:pre-wrap;background:var(--surface2);padding:12px;border-radius:8px; border:1px solid var(--line);"></pre></aside>
+  </div><!--/layout-->`;
     return}
 
   if(ui.tab!=='all'&&!S.locations.some(l=>l.id===ui.tab))ui.tab='all';
-  const all=items(),loaded=S.locations.some(l=>S.results[l.id]?.products);
+
+  const all=items();
+  // loaded = any source has returned products
+  const loaded = Object.keys(S.results).some(k => S.results[k]?.products);
   const watchedIn=all.filter(p=>p.watched&&p.inStock),inStock=all.filter(p=>p.inStock);
-  const lastCheck=Math.max(0,...S.locations.map(l=>S.results[l.id]?.checkedAt||0));
+  const lastCheck=Math.max(0, ...(S.sourcesArr||[]).map(s => s.lastRun || 0));
   const allItems=(()=>{const t=ui.tab;ui.tab='all';const r=items();ui.tab=t;return r})();
   const wAll=allItems.filter(p=>p.watched&&p.inStock);
+  const counts=srcCounts();
+  const totalInStock=Object.values(counts).reduce((a,b)=>a+b,0);
+  const totalItems=allItems.length;
+  const activeSources=(S.sourcesArr||[]).filter(s=>s.enabled).length;
 
   // filtering & sorting
   const q=ui.q.trim().toLowerCase();
-  let list=all.filter(p=>(ui.stock==='all'||(ui.stock==='in'?p.inStock:p.watched))&&(!q||p.name.toLowerCase().includes(q)));
+  let list=all.filter(p=>(ui.stock==='all'||(ui.stock==='in'?p.inStock:p.watched))&&(!q||p.name.toLowerCase().includes(q))&&(ui.src==='all'||p.source===ui.src));
   const isNew=p=>p.since&&Date.now()-p.since<NEW_MS;
   const smart=p=>(p.watched&&p.inStock?8:0)+(isNew(p)?4:0)+(p.inStock?2:0)+(p.watched?1:0);
   list.sort(ui.sort==='price'?(a,b)=>a.price-b.price:ui.sort==='pricedesc'?(a,b)=>b.price-a.price:ui.sort==='name'?(a,b)=>a.name.localeCompare(b.name):(a,b)=>smart(b)-smart(a)||a.price-b.price);
@@ -246,36 +337,52 @@ function render(){
 
   const card=p=>{
     const off=p.mrp>p.price?Math.round((1-p.price/p.mrp)*100):0;
+    const isBlinkit = p.source === 'blinkit';
     const locIn=p.at.find(a=>a.inStock)?.loc;const k=locIn&&locIn.id+':'+p.id;
     const multi=S.locations.length>1;
-    const btn=!p.inStock?`<button class="ghost" disabled>${p.state==='coming_soon'?'Coming soon':p.lastSeen&&p.state==='gone'?'Sold out · seen '+ago(p.lastSeen):'Sold out'}</button>`:
-      carted.has(k)?`<button class="added" disabled>✓ In cart</button>`:
-      busy.has(k)?`<button disabled>Adding…</button>`:
-      `<button onclick="cart('${locIn.id}',${p.id})">Add to cart${multi&&ui.tab==='all'?` <span class="sm">· ${esc(locIn.name)}</span>`:''}</button>`;
+    const srcName = (S.sourcesArr||[]).find(s=>s.id===p.source)?.name || p.source;
+    const srcEmoji = emojiMap[p.source]||'📦';
+    const srcColor = srcColors[p.source]||'#555';
+
+    // Action button: "Add to cart" for Blinkit, "Buy on X" link for others
+    let btn;
+    if (!p.inStock) {
+      btn = `<button class="ghost" disabled>${p.state==='coming_soon'?'Coming soon':p.lastSeen&&p.state==='gone'?'Sold out · seen '+ago(p.lastSeen):'Sold out'}</button>`;
+    } else if (isBlinkit && locIn) {
+      const ck = locIn.id+':'+p.id;
+      btn = carted.has(ck) ? `<button class="added" disabled>✓ In cart</button>` :
+            busy.has(ck) ? `<button disabled>Adding…</button>` :
+            `<button onclick="cart('${locIn.id}','${p.id}')">Add to cart${multi&&ui.tab==='all'?` <span class="sm">· ${esc(locIn.name)}</span>`:''}</button>`;
+    } else {
+      btn = `<a class="abtn" href="${esc(p.url)}" target="_blank" rel="noopener">Buy on ${esc(srcName)} ↗</a>`;
+    }
+
     return `<article class="card ${p.inStock?'':'out'} ${p.watched?'w':''}">
       <div class="img"><img src="${esc(p.image)}" alt="" loading="lazy">
-        <div class="badges">${isNew(p)?'<span class="b new">New</span>':''}${!p.inStock?`<span class="b sold">${p.state==='coming_soon'?'Coming soon':'Sold out'}</span>`:off>=5?`<span class="b off">${off}% off</span>`:''}</div>
-        <button class="starbtn ${p.watched?'on':''}" title="${p.watched?'Watching “'+esc(p.watched)+'” — click to stop':'Watch this model'}" onclick="toggleWatch(${esc(JSON.stringify(p.name))},${p.watched?esc(JSON.stringify(p.watched)):'null'})">${p.watched?'★':'☆'}</button></div>
+        <div class="badges"><span class="b src" style="background:${srcColor};color:#fff">${srcEmoji} ${esc(srcName)}</span>${isNew(p)?'<span class="b new">New</span>':''}${!p.inStock?`<span class="b sold">${p.state==='coming_soon'?'Coming soon':'Sold out'}</span>`:off>=5?`<span class="b off">${off}% off</span>`:''}</div>
+        <button class="starbtn ${p.watched?'on':''}" title="${p.watched?'Watching "'+esc(p.watched)+'" — click to stop':'Watch this model'}" onclick="toggleWatch(${esc(JSON.stringify(p.name))},${p.watched?esc(JSON.stringify(p.watched)):'null'})">${p.watched?'★':'☆'}</button></div>
       <div class="body">
         <a class="name" href="${esc(p.url)}" target="_blank" rel="noopener" title="${esc(p.name)}">${esc(p.name.replace(/^hot\s*wheels\s*/i,''))}</a>
-        <div class="price"><b>${rupee(p.price)}</b>${p.mrp>p.price?`<s>${rupee(p.mrp)}</s>`:''}<span class="sm mut">${esc(p.unit)}</span></div>
-        ${multi&&ui.tab==='all'?`<div class="where">${p.at.map(a=>`<span class="loc ${a.inStock?'':'x'}">${esc(a.loc.name)}</span>`).join('')}</div>`:''}
+        <div class="price"><b>${rupee(p.price)}</b>${p.mrp>p.price?`<s>${rupee(p.mrp)}</s>`:''}<span class="sm mut">${esc(p.unit||'')}</span></div>
+        ${isBlinkit&&multi&&ui.tab==='all'?`<div class="where">${p.at.map(a=>`<span class="loc ${a.inStock?'':'x'}">${esc(a.loc.name)}</span>`).join('')}</div>`:''}
         <div class="act">${btn}</div></div></article>`};
 
   const tabCount=l=>{const r=S.results[l.id];return r?.products?r.products.filter(p=>p.inStock).length:'…'};
   const errFor=ui.tab==='all'?S.locations.filter(l=>S.results[l.id]?.error):S.locations.filter(l=>l.id===ui.tab&&S.results[l.id]?.error);
 
   main.innerHTML=`
+  <div class="layout">
+  <div class="main-col" style="display:flex;flex-direction:column;gap:16px;">
   <section class="stats">
     <div class="stat ${wAll.length?'hot':''}"><div class="l">★ Watched in stock</div><div class="n">${S.models.length?wAll.length:'—'}</div>
-      <div class="sub ${wAll.length?'':'mut'}">${!S.models.length?'Tap ☆ on any car to watch it':wAll.length?esc(wAll.map(p=>modelName(p.name)).join(', ')):'Nothing you’re watching is in stock yet'}</div></div>
-    <div class="stat"><div class="l">In stock</div><div class="n">${allItems.filter(p=>p.inStock).length}<span class="mut" style="font-size:15px;font-weight:600"> / ${allItems.length}</span></div><div class="sub mut">across ${S.locations.length} location${S.locations.length>1?'s':''}</div></div>
-    <div class="stat"><div class="l">Last checked</div><div class="n" style="font-size:20px;padding:4px 0">${S.checking?'Now…':ago(lastCheck)}</div><div class="sub mut">every ${S.settings.intervalSec>=60?S.settings.intervalSec/60+' min':S.settings.intervalSec+'s'}${S.settings.autoCart?' · auto-cart on':''}</div></div>
+      <div class="sub ${wAll.length?'':'mut'}">${!S.models.length?'Tap ☆ on any car to watch it':wAll.length?esc(wAll.map(p=>modelName(p.name)).join(', ')):'Nothing you\'re watching is in stock yet'}</div></div>
+    <div class="stat"><div class="l">In stock</div><div class="n">${totalInStock}<span class="mut" style="font-size:15px;font-weight:600"> / ${totalItems}</span></div><div class="sub mut">across ${activeSources} source${activeSources>1?'s':''}</div></div>
+    <div class="stat"><div class="l">Last checked</div><div class="n" style="font-size:20px;padding:4px 0">${anyChecking?'Now…':ago(lastCheck)}</div><div class="sub mut">${activeSources} source${activeSources>1?'s':''} active</div></div>
   </section>
   <section class="panel">
     <nav class="tabs" role="tablist">
-      <button class="tab ${ui.tab==='all'?'on':''}" onclick="setUi('tab','all')">All <span class="count">${allItems.filter(p=>p.inStock).length}</span></button>
-      ${S.locations.map(l=>`<button class="tab ${ui.tab===l.id?'on':''}" onclick="setUi('tab','${l.id}')" title="${esc(l.label)}">${S.results[l.id]?.error?'⚠️ ':''}${esc(l.name)} <span class="count">${tabCount(l)}</span></button>`).join('')}
+      <button class="tab ${ui.tab==='all'?'on':''}" onclick="setUi('tab','all')">All <span class="count">${totalInStock}</span></button>
+      ${S.locations.map(l=>`<button class="tab ${ui.tab===l.id?'on':''}" onclick="setUi('tab','${l.id}')" title="${esc(l.label)}">🟢 ${S.results[l.id]?.error?'⚠️ ':''}${esc(l.name)} <span class="count">${tabCount(l)}</span></button>`).join('')}
       <button class="tab" onclick="drawer(true)" title="Add location">＋</button>
     </nav>
     <div class="tools">
@@ -283,28 +390,45 @@ function render(){
       <div class="seg" role="group">${[['in','In stock'],['watched','★ Watched'],['all','All']].map(([v,t])=>`<button class="${ui.stock===v?'on':''}" onclick="setUi('stock','${v}')">${t}</button>`).join('')}</div>
       <select onchange="setUi('sort',this.value)" aria-label="Sort">${[['smart','Best match'],['price','Price: low → high'],['pricedesc','Price: high → low'],['name','Name']].map(([v,t])=>`<option value="${v}" ${ui.sort===v?'selected':''}>${t}</option>`).join('')}</select>
     </div>
+
+    <div class="watchbar" style="padding-bottom:8px">
+      <span class="sm mut">Source:</span>
+      <span class="src-chip chip ${ui.src==='all'?'on':''}" onclick="setUi('src','all')">All <span class="src-ct">${totalInStock}</span></span>
+      ${(S.sourcesArr||[]).filter(s=>s.enabled).map(s => `<span class="src-chip chip ${ui.src===s.id?'on':''}" style="opacity:${s.enabled?1:0.5}" onclick="setUi('src','${s.id}')">${s.emoji} ${s.name} <span class="src-ct">${counts[s.id]||0}</span>${s.checking?'<span class="sm" style="margin-left:2px">⟳</span>':''}</span>`).join('')}
+    </div>
+
     <div class="watchbar"><span class="sm mut">Watching:</span>
       ${S.models.map(m=>{const hits=allItems.filter(p=>p.watched===m.text),inn=hits.filter(p=>p.inStock).length;
         const st=inn?`<b style="color:var(--ok)">· ${inn} in stock</b>`:hits.some(p=>p.state==='coming_soon')?'<span class="mut">· coming soon</span>':hits.length?'<span class="mut">· sold out</span>':'<span class="mut">· not listed</span>';
-        return `<span class="chip star" title="${inn?'In stock now':hits.length?'Listed before, not in stock now':'Blinkit doesn’t list this model at your locations right now'}">★ ${esc(m.text)} ${st}<button onclick="del('/api/models/${m.id}')" aria-label="Stop watching ${esc(m.text)}">✕</button></span>`}).join('')}
+        return `<span class="chip star" title="${inn?'In stock now':hits.length?'Listed before, not in stock now':'Not listed on any source right now'}">★ ${esc(m.text)} ${st}<button onclick="del('/api/models/${m.id}')" aria-label="Stop watching ${esc(m.text)}">✕</button></span>`}).join('')}
       <span class="addchip"><input type="text" id="mAdd" placeholder="Add a model name…" onkeydown="event.key==='Enter'&&addModel()"><button onclick="addModel()">＋</button></span></div>
     ${errFor.map(l=>`<div class="meta" style="color:var(--no)">⚠️ ${esc(l.name)}: last check failed (${esc(S.results[l.id].error)}). Will retry automatically.</div>`).join('')}
     ${!loaded?`<div class="grid">${'<div class="skel"></div>'.repeat(6)}</div>`:
       list.length?`<div class="grid">${list.map(card).join('')}</div>`:
-      `<div class="empty">${q?`No cars match “${esc(ui.q)}”.`:ui.stock==='watched'?'You’re not watching anything here yet. Tap ☆ on a car to watch it.':ui.stock==='in'?`Nothing in stock right now. <a href="#" onclick="setUi('stock','all');return false">Show sold-out items</a>`:'No Hot Wheels listed here right now.'}</div>`}
-  </section>`;
+      `<div class="empty">${q?`No cars match "${esc(ui.q)}".`:ui.stock==='watched'?'You\'re not watching anything here yet. Tap ☆ on a car to watch it.':ui.stock==='in'?`Nothing in stock right now. <a href="#" onclick="setUi('stock','all');return false">Show sold-out items</a>`:'No Hot Wheels listed here right now.'}</div>`}
+  </section>
+  </div><!--/main-col-->
+  <aside class="panel log-panel"><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;"><h4 style="margin:0;font-size:13px;text-transform:uppercase;letter-spacing:.04em;color:var(--mut);">Activity</h4><span class="sm mut">Live</span></div><pre id="mainLog" style="margin:0;flex:1;overflow:auto;font:12px/1.6 ui-monospace,Menlo,monospace;white-space:pre-wrap;background:var(--surface2);padding:12px;border-radius:8px; border:1px solid var(--line);"></pre></aside>
+  </div><!--/layout-->`;
   if(focusId&&$(focusId)){$(focusId).focus();if(selS!=null)try{$(focusId).setSelectionRange(selS,selS)}catch{}}
 }
 function setUi(k,v){ui[k]=v;saveUi();render()}
 
 function alertNew(){
   const hits=[];
+  // Check Blinkit locations
   for(const l of S.locations)for(const p of S.results[l.id]?.products||[]){const k=l.id+':'+p.id;
     if(p.watched&&p.inStock){if(!alerted.has(k)){alerted.add(k);hits.push(`${modelName(p.name)} · ${l.name}`)}}
     else alerted.delete(k)}
+  // Check other sources
+  for(const src of (S.sourcesArr||[]).filter(s=>s.id!=='blinkit'))
+    for(const p of S.results[src.id]?.products||[]){const k=src.id+':'+p.id;
+      if(p.watched&&p.inStock){if(!alerted.has(k)){alerted.add(k);hits.push(`${modelName(p.name)} · ${src.name}`)}}
+      else alerted.delete(k)}
   ls.set('alerted',[...alerted]);
-  const n=S.locations.reduce((a,l)=>a+(S.results[l.id]?.products||[]).filter(p=>p.watched&&p.inStock).length,0);
-  document.title=n?`(${n}) ★ In stock · Hot Wheels Watcher`:'Hot Wheels Watcher';
+  const n=hits.length;
+  const totalWatched=[...alerted].length;
+  document.title=totalWatched?`(${totalWatched}) ★ In stock · Hot Wheels Watcher`:'Hot Wheels Watcher';
   if(!hits.length||firstLoad)return;
   beep();toast('★ In stock: '+hits.join(', '));
   if('Notification'in window&&Notification.permission==='granted'){const n=new Notification('★ Hot Wheels in stock!',{body:hits.join('\n'),tag:'hw'});n.onclick=()=>{window.focus();n.close()}}
@@ -316,6 +440,16 @@ async function load(){
   catch{$('status').innerHTML='<span class="dot err"></span>Server offline — run <code>npm start</code>'}}
 load();setInterval(load,3000);
 // keep the countdown ticking without re-rendering everything
-setInterval(()=>{if(!S||S.checking||!S.nextRun||!S.locations.length)return;const n=Math.max(0,Math.round((S.nextRun-Date.now())/1000));const errs=S.locations.filter(l=>S.results[l.id]?.error).length;
-  $('status').innerHTML=`<span class="dot ${errs?'err':''}"></span>${errs?errs+' failed · ':''}Next check ${n>=60?Math.round(n/60)+'m':n+'s'}`},1000);
+setInterval(()=>{
+  if(!S)return;
+  const anyChecking=(S.sourcesArr||[]).some(s=>s.checking);
+  if(anyChecking||!S.locations.length)return;
+  const vals=(S.sourcesArr||[]).filter(s=>s.nextRun).map(s=>Math.max(0,Math.round((s.nextRun-Date.now())/1000)));
+  if(!vals.length)return;
+  const n=Math.min(...vals);
+  const locErrs=S.locations.filter(l=>S.results[l.id]?.error).length;
+  const srcErrs=(S.sourcesArr||[]).filter(s=>s.error).length;
+  const totalErrs=locErrs+srcErrs;
+  $('status').innerHTML=`<span class="dot ${totalErrs?'err':''}"></span>${totalErrs?totalErrs+' failed · ':''}Next check ${n>=60?Math.round(n/60)+'m':n+'s'}`;
+},1000);
 </script></body></html>
