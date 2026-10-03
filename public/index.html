@@ -4,176 +4,252 @@
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏎️</text></svg>">
 <style>
 :root{
-  --bg:#f4f5f7;--surface:#fff;--surface2:#f8f9fb;--fg:#15171a;--mut:#667085;--line:#e4e7ec;
-  --brand:#f8cb46;--brand-fg:#1c1f24;--ok:#0c831f;--okbg:#e7f6ea;--no:#b42318;--nobg:#fdecea;--star:#e8a100;
-  --shadow:0 1px 2px rgba(16,24,40,.06),0 1px 3px rgba(16,24,40,.08);--r:12px;
+  color-scheme:light;
+  --bg:#fafafa;--surface:#fff;--surface2:#f4f4f5;--fg:#09090b;--mut:#71717a;
+  --line:rgba(9,9,11,.08);--line2:rgba(9,9,11,.15);--dot:rgba(9,9,11,.13);
+  --btn:#18181b;--btn-fg:#fafafa;--brand:#ff6a13;--brand2:#ffb400;
+  --ok:#15803d;--okbg:rgba(22,163,74,.1);--no:#dc2626;--nobg:rgba(220,38,38,.08);--star:#d97706;--starbg:rgba(245,158,11,.12);
+  --main:#2563eb;--silver:#64748b;--prem:#ca8a04;--amz:#ea580c;--oth:#71717a;
+  --sh:0 0 0 1px var(--line),0 1px 2px rgba(9,9,11,.04),0 4px 10px -2px rgba(9,9,11,.05),inset 0 1px 0 rgba(255,255,255,.9);
+  --sh-h:0 0 0 1px var(--line2),0 2px 4px rgba(9,9,11,.05),0 18px 36px -12px rgba(9,9,11,.22),inset 0 1px 0 #fff;
+  --sh-btn:0 1px 2px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.18);
+  --spot:rgba(255,106,19,.10);--img:#fff;--r:16px;
 }
 @media (prefers-color-scheme:dark){:root{
-  --bg:#0f1114;--surface:#181b20;--surface2:#1f232a;--fg:#e9ebee;--mut:#98a2b3;--line:#2a2f37;
-  --ok:#4cc764;--okbg:#14301b;--no:#f97066;--nobg:#3a1715;--star:#fdb022;--shadow:none}}
+  color-scheme:dark;
+  --bg:#09090b;--surface:#101012;--surface2:#18181b;--fg:#fafafa;--mut:#a1a1aa;
+  --line:rgba(255,255,255,.08);--line2:rgba(255,255,255,.16);--dot:rgba(255,255,255,.14);
+  --btn:#fafafa;--btn-fg:#09090b;
+  --ok:#4ade80;--okbg:rgba(74,222,128,.12);--no:#f87171;--nobg:rgba(248,113,113,.1);--star:#fbbf24;--starbg:rgba(251,191,36,.12);
+  --main:#60a5fa;--silver:#94a3b8;--prem:#facc15;--amz:#fb923c;--oth:#a1a1aa;
+  --sh:0 0 0 1px var(--line),0 8px 24px -10px rgba(0,0,0,.7),inset 0 1px 0 rgba(255,255,255,.05);
+  --sh-h:0 0 0 1px var(--line2),0 0 44px -14px rgba(255,106,19,.45),0 18px 40px -12px rgba(0,0,0,.8),inset 0 1px 0 rgba(255,255,255,.09);
+  --sh-btn:0 1px 2px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.9);
+  --spot:rgba(255,255,255,.07);--img:#f4f4f5}}
 *{box-sizing:border-box}
-body{margin:0;font:14px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--fg)}
-button{font:inherit;cursor:pointer;border:0;border-radius:8px;padding:8px 14px;font-weight:600;background:var(--brand);color:var(--brand-fg);white-space:nowrap;transition:filter .15s,background .15s}
-button:hover:not(:disabled){filter:brightness(.95)}button:disabled{opacity:.55;cursor:default}
-button.ghost{background:var(--surface);color:var(--fg);border:1px solid var(--line)}
-button.icon{background:none;padding:6px;border-radius:6px;color:var(--mut);font-weight:400;line-height:1}
-button.icon:hover{background:var(--surface2);filter:none}
-input[type=text],input[type=number],input[type=search],select{font:inherit;padding:8px 11px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--fg);min-width:0}
-input:focus,select:focus,button:focus-visible{outline:2px solid var(--brand);outline-offset:1px}
-a{color:inherit}.mut{color:var(--mut)}.sm{font-size:12px}
+html{scroll-behavior:smooth}
+body{margin:0;font:14px/1.5 Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--fg);-webkit-font-smoothing:antialiased;letter-spacing:-.006em}
+body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background-image:radial-gradient(var(--dot) 1px,transparent 1.2px);background-size:22px 22px;-webkit-mask-image:radial-gradient(ellipse 80% 55% at 50% 0%,#000 25%,transparent 75%);mask-image:radial-gradient(ellipse 80% 55% at 50% 0%,#000 25%,transparent 75%)}
+button{font:inherit;cursor:pointer;border:0;border-radius:10px;padding:8px 14px;font-weight:600;background:var(--btn);color:var(--btn-fg);box-shadow:var(--sh-btn);transition:opacity .15s,transform .05s,background .15s,box-shadow .15s}
+button:hover:not(:disabled){opacity:.88}button:active:not(:disabled){transform:translateY(1px)}button:disabled{opacity:.45;cursor:default}
+button.ghost{background:var(--surface);color:var(--fg);box-shadow:var(--sh)}
+button.ghost:hover:not(:disabled){background:var(--surface2);opacity:1}
+button.icon{background:none;box-shadow:none;padding:6px 8px;color:var(--mut);font-weight:400}
+button.icon:hover{background:var(--surface2);opacity:1}
+input,select{font:inherit;padding:9px 12px;border:0;border-radius:10px;background:var(--surface);color:var(--fg);min-width:0;box-shadow:var(--sh)}
+input::placeholder{color:var(--mut)}
+input:focus,select:focus{outline:0;box-shadow:0 0 0 1px var(--fg),0 0 0 4px var(--line)}
+button:focus-visible,a:focus-visible{outline:2px solid var(--fg);outline-offset:2px}
+.mut{color:var(--mut)}.sm{font-size:12px}
+a{color:inherit}
 
-/* header */
-header{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--surface) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
-.hwrap{max-width:1240px;margin:auto;padding:10px 16px;display:flex;gap:10px;align-items:center}
-.logo{font-weight:800;font-size:17px;margin-right:auto;display:flex;gap:8px;align-items:center}
-.pill{white-space:nowrap;display:inline-flex;gap:6px;align-items:center;padding:4px 10px;border-radius:99px;background:var(--surface2);border:1px solid var(--line);font-size:12px;color:var(--mut)}
-.dot{width:8px;height:8px;border-radius:50%;background:var(--ok)}.dot.busy{background:var(--brand);animation:pulse 1s infinite}.dot.err{background:var(--no)}
-@keyframes pulse{50%{opacity:.3}}
+header.top{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 78%,transparent);-webkit-backdrop-filter:blur(14px) saturate(1.4);backdrop-filter:blur(14px) saturate(1.4);box-shadow:0 1px 0 var(--line)}
+.hwrap{max-width:1240px;margin:auto;padding:11px 20px;display:flex;gap:10px;align-items:center}
+.logo{display:flex;gap:10px;align-items:center;margin-right:auto;font-weight:700;font-size:16px;letter-spacing:-.025em}
+.logo i{font-style:normal;width:30px;height:30px;border-radius:9px;background:var(--surface);box-shadow:var(--sh);display:grid;place-items:center;font-size:16px}
+.logo b{font-weight:700;background:linear-gradient(90deg,var(--brand),var(--brand2));-webkit-background-clip:text;background-clip:text;color:transparent}
+header.top button{white-space:nowrap}
+.pill{display:inline-flex;gap:8px;align-items:center;padding:6px 12px;border-radius:99px;background:var(--surface);box-shadow:var(--sh);font-size:12px;color:var(--mut);white-space:nowrap}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--ok);flex:none;box-shadow:0 0 0 3px var(--okbg)}.dot.busy{background:var(--brand2);box-shadow:0 0 0 3px rgba(255,180,0,.2);animation:pulse 1s infinite}.dot.err{background:var(--no);box-shadow:0 0 0 3px var(--nobg)}
+@keyframes pulse{50%{opacity:.35}}
+main{max-width:1240px;margin:auto;padding:22px 20px 40px;display:grid;grid-template-columns:minmax(0,1fr);gap:16px}
 
-main{max-width:1240px;margin:auto;padding:16px;display:grid;gap:16px}
+.hot{border-radius:var(--r);padding:14px 16px 16px;background:linear-gradient(180deg,color-mix(in srgb,var(--brand) 9%,var(--surface)),var(--surface));box-shadow:0 0 0 1px color-mix(in srgb,var(--brand) 38%,var(--line)),0 0 50px -20px var(--brand),inset 0 1px 0 rgba(255,255,255,.08)}
+.hot h2{margin:0 0 10px;font-size:13.5px;display:flex;gap:9px;align-items:center;font-weight:650}
+.hot .live{width:8px;height:8px;border-radius:50%;background:#22c55e;animation:ping 1.6s infinite}
+@keyframes ping{0%{box-shadow:0 0 0 0 rgba(34,197,94,.55)}70%,100%{box-shadow:0 0 0 9px rgba(34,197,94,0)}}
+.hotrow{display:flex;gap:10px;overflow-x:auto;padding:2px 2px 6px;scrollbar-width:thin}
+.hotcard{flex:0 0 auto;display:flex;gap:11px;align-items:center;background:var(--surface);border-radius:12px;padding:9px;min-width:290px;max-width:360px;box-shadow:var(--sh)}
+.hotcard img{width:56px;height:56px;object-fit:contain;background:var(--img);border-radius:8px;flex:none}
+.hotcard .t{flex:1;min-width:0;display:grid;gap:4px}
+.hotcard .t b{font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hotcard .t .tags{flex-wrap:nowrap;overflow:hidden}
+.hotcard a{padding:7px 12px;font-size:13px;border-radius:9px;text-decoration:none;font-weight:650;background:var(--btn);color:var(--btn-fg);box-shadow:var(--sh-btn);white-space:nowrap}
 
-/* summary */
-.stats{display:grid;grid-template-columns:2fr 1fr 1fr;gap:12px}
-.stat{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;box-shadow:var(--shadow);min-width:0}
-.stat .n{font-size:28px;font-weight:800;line-height:1.1}.stat .l{color:var(--mut);font-size:12px;text-transform:uppercase;letter-spacing:.04em;font-weight:600}
-.stat.hot{background:var(--okbg);border-color:color-mix(in srgb,var(--ok) 35%,transparent)}.stat.hot .n{color:var(--ok)}
-.stat .sub{font-size:13px;margin-top:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-@media (max-width:700px){.stats{grid-template-columns:1fr 1fr}.stats .stat:first-child{grid-column:1/-1}}
+.tabs{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px}
+.tab{position:relative;text-align:left;background:var(--surface);color:var(--fg);border-radius:14px;padding:12px 14px;box-shadow:var(--sh);overflow:hidden;--c:var(--oth);transition:box-shadow .2s,transform .2s}
+.tab::after{content:"";position:absolute;left:14px;right:14px;bottom:0;height:2px;border-radius:2px 2px 0 0;background:var(--c);opacity:.0;transition:opacity .2s}
+.tab:hover:not(:disabled){opacity:1;box-shadow:var(--sh-h);transform:translateY(-1px)}
+.tab.on{background:var(--fg);color:var(--bg);box-shadow:0 0 0 1px var(--fg),0 10px 24px -10px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.2)}
+.tab.on::after{opacity:1}
+.tab .k{font-weight:650;font-size:13.5px;display:flex;justify-content:space-between;align-items:baseline;gap:6px}
+.tab .n{font-size:21px;font-weight:700;line-height:1;color:var(--c);letter-spacing:-.03em}
+.tab.on .n{color:var(--bg)}
+.tab .s{font-size:11.5px;color:var(--mut);margin-top:3px}.tab.on .s{color:color-mix(in srgb,var(--bg) 65%,transparent)}
+.tab[data-v=cars]{--c:var(--brand)}.tab[data-v=mainline]{--c:var(--main)}.tab[data-v=silver]{--c:var(--silver)}.tab[data-v=premium]{--c:var(--prem)}.tab[data-v=amazon]{--c:var(--amz)}
+@media (max-width:1000px){.tabs{display:flex;overflow-x:auto;scrollbar-width:none;margin:0 -20px;padding:4px 20px 8px}.tab{flex:0 0 138px}}
 
-/* toolbar */
-.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow)}
-.tabs{display:flex;gap:4px;padding:8px 8px 0;overflow-x:auto;border-bottom:1px solid var(--line);scrollbar-width:none}
-.tab{background:none;color:var(--mut);border-radius:8px 8px 0 0;padding:9px 12px;font-weight:600;border-bottom:2px solid transparent;display:flex;gap:6px;align-items:center}
-.tab:hover{filter:none;color:var(--fg)}.tab.on{color:var(--fg);border-bottom-color:var(--brand)}
-.count{font-size:11px;padding:1px 7px;border-radius:99px;background:var(--surface2);color:var(--mut)}.tab.on .count{background:var(--brand);color:var(--brand-fg)}
-.tools{display:flex;gap:8px;flex-wrap:wrap;align-items:center;padding:12px}
-.tools input[type=search]{flex:1 1 200px}
-.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
-.seg button{background:var(--surface);color:var(--mut);border-radius:0;padding:7px 11px;font-weight:600}
-.seg button.on{background:var(--fg);color:var(--bg)}
-.watchbar{display:flex;gap:6px;flex-wrap:wrap;align-items:center;padding:0 12px 12px}
-.chip{display:inline-flex;align-items:center;gap:2px;padding:3px 4px 3px 10px;border-radius:99px;border:1px solid var(--line);background:var(--surface2);font-size:13px;cursor:default}
-.chip.star{border-color:color-mix(in srgb,var(--star) 50%,transparent)}
-.chip button{padding:0 6px;background:none;color:var(--mut);font-weight:400}
-.addchip{display:inline-flex}.addchip input{padding:4px 10px;border-radius:99px 0 0 99px;font-size:13px;width:170px}
-.addchip button{border-radius:0 99px 99px 0;padding:4px 10px;font-size:13px}
-.meta{padding:0 12px 10px;font-size:12px;color:var(--mut)}
+.panel{background:var(--surface);border-radius:20px;box-shadow:var(--sh)}
+.tools{display:flex;gap:10px;flex-wrap:wrap;align-items:center;padding:14px}
+.searchbox{position:relative;flex:1 1 240px}
+.searchbox input{width:100%;padding-left:36px;background:var(--bg)}
+.searchbox:before{content:"";position:absolute;left:12px;top:50%;width:12px;height:12px;margin-top:-8px;border:2px solid var(--mut);border-radius:50%}
+.searchbox:after{content:"";position:absolute;left:24px;top:50%;width:6px;height:2px;background:var(--mut);transform:rotate(45deg);margin-top:5px}
+.searchbox kbd{position:absolute;right:10px;top:50%;transform:translateY(-50%);font:11px ui-monospace,monospace;color:var(--mut);box-shadow:var(--sh);border-radius:5px;padding:0 6px;pointer-events:none;background:var(--surface)}
+.seg{display:inline-flex;background:var(--bg);border-radius:11px;padding:3px;gap:2px;box-shadow:inset 0 0 0 1px var(--line)}
+.seg button{background:transparent;color:var(--mut);padding:6px 12px;border-radius:8px;font-weight:550;box-shadow:none}
+.seg button.on{background:var(--surface);color:var(--fg);box-shadow:var(--sh)}
+.seg button:hover:not(.on):not(:disabled){opacity:1;color:var(--fg)}
+.row2{display:flex;gap:8px;flex-wrap:wrap;align-items:center;padding:0 14px 14px}
+.row2 .lab{font-size:11px;font-weight:650;letter-spacing:.06em;text-transform:uppercase;color:var(--mut);min-width:64px}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:99px;background:var(--surface);color:var(--fg);font-size:13px;font-weight:550;box-shadow:var(--sh)}
+.chip.btn{font-weight:550}.chip.btn:hover:not(.on){background:var(--surface2);opacity:1}
+.chip.on{background:var(--fg);color:var(--bg);box-shadow:0 0 0 1px var(--fg),inset 0 1px 0 rgba(255,255,255,.2)}
+.chip .mini{width:16px;height:16px;border-radius:5px;background:var(--sc);color:#fff;font-size:10px;font-weight:800;display:grid;place-items:center;margin-left:-5px}
+.chip.on .mini{box-shadow:0 0 0 1.5px var(--bg)}
+.chip .c{font-size:11.5px;opacity:.65;font-weight:700}
+.chip.star{background:var(--starbg);box-shadow:0 0 0 1px color-mix(in srgb,var(--star) 40%,transparent);padding-right:4px;color:var(--fg)}
+.chip.star .x{background:none;box-shadow:none;color:var(--mut);padding:0 7px;font-weight:500;border-radius:99px}
+.chip.star .x:hover{color:var(--no);opacity:1}
+.addchip{display:inline-flex}.addchip input{padding:5px 12px;border-radius:99px 0 0 99px;width:170px;font-size:13px}
+.addchip button{border-radius:0 99px 99px 0;padding:5px 14px;font-size:13px}
+.note{margin:0 14px 14px;padding:9px 12px;border-radius:10px;background:var(--bg);box-shadow:inset 0 0 0 1px var(--line);color:var(--mut);font-size:12.5px}
+.note.err{background:var(--nobg);color:var(--no);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--no) 25%,transparent);display:flex;gap:8px;align-items:center}
+.note.err a{margin-left:auto;font-weight:700;white-space:nowrap}
+.banner{background:var(--surface);border-radius:var(--r);padding:14px 16px;display:flex;gap:12px;align-items:center;flex-wrap:wrap;box-shadow:var(--sh)}
+.banner p{margin:0;flex:1;min-width:220px}
 
-/* source filter chips */
-.src-chip{cursor:pointer;transition:background .12s,border-color .12s}
-.src-chip:hover{background:var(--line)}
-.src-chip.on{background:var(--fg);color:var(--bg);border-color:var(--fg)}
-.src-chip .src-ct{font-size:11px;padding:1px 6px;border-radius:99px;background:rgba(0,0,0,.1);margin-left:2px}
-.src-chip.on .src-ct{background:rgba(255,255,255,.2)}
-
-/* grid */
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px;padding:0 12px 12px}
-.card{position:relative;border:1px solid var(--line);border-radius:10px;background:var(--surface);display:flex;flex-direction:column;overflow:hidden;transition:box-shadow .15s,transform .15s}
-.card:hover{box-shadow:0 6px 18px rgba(0,0,0,.08);transform:translateY(-1px)}
-.card.w{border-color:var(--star);box-shadow:0 0 0 1px var(--star)}
-.card.out .img img{filter:grayscale(1);opacity:.5}
-.img{background:#fff;aspect-ratio:1;display:grid;place-items:center;position:relative}
-.img img{width:88%;height:88%;object-fit:contain}
-.starbtn{position:absolute;top:6px;right:6px;background:rgba(255,255,255,.92);color:#98a2b3;border-radius:99px;width:32px;height:32px;padding:0;font-size:17px;box-shadow:0 1px 3px rgba(0,0,0,.15)}
+.sec-h{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:14px 18px 12px;box-shadow:0 -1px 0 var(--line)}
+.sec-h h2{margin:0;font-size:15px;font-weight:650;letter-spacing:-.02em;display:flex;gap:9px;align-items:center}
+.sec-h h2:before{content:"";width:8px;height:8px;border-radius:3px;background:var(--c);box-shadow:0 0 12px var(--c)}
+.sec-h .meta{font-size:12.5px;color:var(--mut)}.sec-h .meta b{color:var(--ok);font-weight:650}
+.s-mainline{--c:var(--main)}.s-silver{--c:var(--silver)}.s-premium{--c:var(--prem)}.s-amazon{--c:var(--amz)}.s-other{--c:var(--oth)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px;padding:0 14px 18px}
+.card{position:relative;border-radius:16px;background:var(--surface);display:flex;flex-direction:column;overflow:hidden;box-shadow:var(--sh);transition:transform .2s,box-shadow .2s;isolation:isolate}
+.card::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:0;transition:opacity .25s;background:radial-gradient(280px circle at var(--mx,50%) var(--my,0%),var(--spot),transparent 70%);z-index:2}
+.card:hover{transform:translateY(-3px);box-shadow:var(--sh-h)}.card:hover::after{opacity:1}
+.card.w{box-shadow:0 0 0 1.5px var(--star),0 0 28px -10px var(--star),inset 0 1px 0 rgba(255,255,255,.1)}
+.card.out .img img{filter:grayscale(1);opacity:.45}.card.out .name{color:var(--mut)}
+.img{margin:6px 6px 0;border-radius:11px;background:var(--img);aspect-ratio:1/.9;display:grid;place-items:center;position:relative;box-shadow:inset 0 0 0 1px rgba(9,9,11,.06)}
+.img img{width:88%;height:88%;object-fit:contain;transition:transform .3s}
+.card:hover .img img{transform:scale(1.05)}
+.starbtn{position:absolute;top:8px;right:8px;background:rgba(255,255,255,.94);color:#8b8b94;border-radius:99px;width:32px;height:32px;padding:0;font-size:16px;line-height:1;box-shadow:0 0 0 1px rgba(9,9,11,.08),0 2px 6px rgba(9,9,11,.12);z-index:3}
 .starbtn.on{color:var(--star)}
-.badges{position:absolute;top:6px;left:6px;display:flex;gap:4px;flex-direction:column;align-items:flex-start}
-.b{font-size:10px;font-weight:800;letter-spacing:.04em;padding:2px 7px;border-radius:5px;text-transform:uppercase}
-.b.new{background:#7a2cf5;color:#fff}.b.off{background:#256fef;color:#fff}.b.sold{background:#344054;color:#fff}
-.b.src{font-weight:700;letter-spacing:0;text-transform:none;font-size:11px}
-.body{padding:10px;display:flex;flex-direction:column;gap:4px;flex:1}
-.name{font-weight:600;font-size:13px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;text-decoration:none;min-height:2.9em}
+.badges{position:absolute;top:8px;left:8px;display:flex;flex-direction:column;gap:4px;align-items:flex-start;max-width:68%}
+.b{font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:99px;color:#fff;box-shadow:inset 0 1px 0 rgba(255,255,255,.25),0 1px 2px rgba(0,0,0,.2)}
+.b.new{background:linear-gradient(90deg,#7c3aed,#c026d3)}.b.off{background:#16a34a}.b.sold{background:#3f3f46}
+.body{padding:11px 13px 13px;display:flex;flex-direction:column;gap:7px;flex:1}
+.tags{display:flex;gap:5px;flex-wrap:wrap;align-items:center}
+.tag-store{--sc:#666;display:inline-flex;gap:6px;align-items:center;font-size:11.5px;font-weight:700;line-height:1;padding:3px 8px 3px 3px;border-radius:7px;color:color-mix(in srgb,var(--sc) 62%,var(--fg));background:color-mix(in srgb,var(--sc) 11%,transparent);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--sc) 34%,transparent)}
+.tag-store i{font-style:normal;width:17px;height:17px;border-radius:5px;background:var(--sc);color:#fff;font-size:10.5px;font-weight:800;display:grid;place-items:center;box-shadow:inset 0 1px 0 rgba(255,255,255,.3)}
+.tag-loc{display:inline-flex;gap:4px;align-items:center;font-size:11.5px;font-weight:650;line-height:1;padding:4px 8px 4px 6px;border-radius:7px;background:var(--surface2);color:var(--fg);box-shadow:inset 0 0 0 1px var(--line2)}
+.tag-loc svg{width:11px;height:11px;flex:none;color:var(--ok)}
+.tag-loc.x{color:var(--mut);text-decoration:line-through;font-weight:500}.tag-loc.x svg{color:var(--mut)}
+.name{font-weight:600;font-size:13.5px;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;text-decoration:none;min-height:2.7em;letter-spacing:-.01em}
 .name:hover{text-decoration:underline}
-.price{display:flex;gap:6px;align-items:baseline}.price b{font-size:15px}.price s{color:var(--mut);font-size:12px}
-.where{display:flex;gap:4px;flex-wrap:wrap;margin-top:2px}
-.loc{font-size:11px;padding:1px 7px;border-radius:99px;background:var(--okbg);color:var(--ok);font-weight:600}
-.loc.x{background:var(--surface2);color:var(--mut);text-decoration:line-through;font-weight:400}
-.body .act{margin-top:auto;padding-top:6px;display:flex;gap:6px}.act button,.act a.abtn{flex:1;padding:8px;text-align:center;text-decoration:none;font-weight:600;font-size:14px;border-radius:8px;display:inline-block}
-a.abtn{background:var(--surface2);color:var(--fg);border:1px solid var(--line);transition:filter .15s}
-a.abtn:hover{filter:brightness(.95)}
-.act .added{background:var(--okbg);color:var(--ok)}
-.empty{padding:40px 16px;text-align:center;color:var(--mut)}
-.skel{height:300px;border-radius:10px;background:linear-gradient(90deg,var(--surface2),var(--line),var(--surface2));background-size:200% 100%;animation:sh 1.2s infinite}
+.price{display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}.price b{font-size:19px;letter-spacing:-.03em;font-weight:700}.price s{color:var(--mut);font-size:12.5px}
+.act{margin-top:auto;padding-top:4px;display:flex}
+.act button,.act a{flex:1;text-align:center;text-decoration:none;font-weight:650;border-radius:10px;padding:9px;font-size:13.5px;position:relative;z-index:3}
+a.abtn{background:var(--btn);color:var(--btn-fg);box-shadow:var(--sh-btn)}
+a.abtn:hover{opacity:.88}
+.more{display:flex;justify-content:center;padding:0 14px 18px}
+.empty{padding:36px 16px;text-align:center;color:var(--mut)}
+.empty b{display:block;color:var(--fg);font-size:15px;margin-bottom:4px}
+.empty a,.sum a{color:var(--fg);font-weight:650;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.sum{padding:0 18px 14px;font-size:12.5px;color:var(--mut)}
+.skel{aspect-ratio:1/1.35;border-radius:16px;background:linear-gradient(90deg,var(--surface2),var(--line),var(--surface2));background-size:200% 100%;animation:sh 1.3s infinite}
 @keyframes sh{to{background-position:-200% 0}}
 
-/* onboarding */
-.hero{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:36px 20px;text-align:center;box-shadow:var(--shadow)}
-.hero h2{margin:0 0 6px;font-size:22px}.hero p{margin:0 auto 18px;max-width:520px;color:var(--mut)}
-.hero .row{max-width:560px;margin:auto}
-.row{display:flex;gap:8px;flex-wrap:wrap}.row>input{flex:1 1 180px}
-
-/* layout */
-.layout{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:16px;align-items:start}
-@media (max-width:900px){.layout{grid-template-columns:1fr}}
-.log-panel{position:sticky;top:76px;display:flex;flex-direction:column;height:calc(100vh - 100px);}
-/* drawer */
-.scrim{position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:9;opacity:0;pointer-events:none;transition:opacity .2s}
-.drawer{overflow-x:hidden;position:fixed;top:0;right:0;bottom:0;width:min(420px,100%);background:var(--surface);z-index:10;transform:translateX(100%);transition:transform .22s;overflow-y:auto;border-left:1px solid var(--line)}
+.scrim{position:fixed;inset:0;background:rgba(0,0,0,.5);backdrop-filter:blur(3px);z-index:30;opacity:0;pointer-events:none;transition:opacity .2s}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(440px,100%);background:var(--bg);z-index:31;transform:translateX(100%);transition:transform .24s cubic-bezier(.2,.8,.2,1);overflow:auto;box-shadow:-1px 0 0 var(--line2),-20px 0 50px rgba(0,0,0,.25)}
 .open .scrim{opacity:1;pointer-events:auto}.open .drawer{transform:none}
-.drawer header{position:sticky;display:flex;justify-content:space-between;align-items:center;padding:14px 16px}
-.drawer h3{margin:0;font-size:16px}
-.sec{padding:16px;border-bottom:1px solid var(--line);display:grid;grid-template-columns:minmax(0,1fr);gap:10px}.sec h4{margin:0;font-size:13px;text-transform:uppercase;letter-spacing:.04em;color:var(--mut)}
-.locrow{display:flex;gap:8px;align-items:center;padding:8px 10px;border:1px solid var(--line);border-radius:8px}
-.locrow div{flex:1;min-width:0}.locrow .sm{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.switch{display:flex;gap:10px;align-items:flex-start;cursor:pointer}.switch input{margin-top:3px;width:16px;height:16px;accent-color:var(--ok)}
-pre{margin:0;max-height:320px;overflow:auto;font:12px/1.6 ui-monospace,Menlo,monospace;white-space:pre-wrap;background:var(--surface2);padding:10px;border-radius:8px}
+.drawer .dh{position:sticky;top:0;z-index:2;display:flex;justify-content:space-between;align-items:center;padding:14px 18px;background:color-mix(in srgb,var(--bg) 85%,transparent);backdrop-filter:blur(10px);box-shadow:0 1px 0 var(--line)}
+.drawer h3{margin:0;font-size:16px;font-weight:650}
+.sec{margin:14px;padding:16px;background:var(--surface);box-shadow:var(--sh);border-radius:16px;display:grid;gap:10px}
+.sec h4{margin:0;font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--mut);font-weight:650}
+.srow{box-shadow:inset 0 0 0 1px var(--line);border-radius:12px;padding:10px 12px;display:grid;gap:8px}
+.srow .top{display:flex;justify-content:space-between;align-items:center}
+.srow .stat{font-size:12px;color:var(--mut)}
+.locrow{display:flex;gap:8px;align-items:center;padding:9px 12px;box-shadow:inset 0 0 0 1px var(--line);border-radius:12px}
+.locrow div{flex:1;min-width:0}
+.row{display:flex;gap:8px;flex-wrap:wrap}.row>input{flex:1 1 140px}
+.switch{display:flex;gap:10px;align-items:flex-start;cursor:pointer}.switch input{margin-top:2px;accent-color:var(--fg);width:16px;height:16px;flex:none;box-shadow:none}
+.tog{position:relative;width:38px;height:22px;flex:none;display:inline-block}
+.tog input{position:absolute;inset:0;opacity:0;margin:0;cursor:pointer;width:100%;height:100%;z-index:1}
+.tog span{position:absolute;inset:0;border-radius:99px;background:var(--line2);transition:background .15s}
+.tog span:after{content:"";position:absolute;left:3px;top:3px;width:16px;height:16px;border-radius:50%;background:#fff;transition:transform .15s;box-shadow:0 1px 2px rgba(0,0,0,.3)}
+.tog input:checked+span{background:var(--ok)}.tog input:checked+span:after{transform:translateX(16px)}
+.tog input:focus-visible+span{outline:2px solid var(--fg);outline-offset:2px}
+pre{margin:0;max-height:300px;overflow:auto;font:12px/1.55 ui-monospace,Consolas,Menlo,monospace;white-space:pre-wrap;background:var(--bg);box-shadow:inset 0 0 0 1px var(--line);padding:10px;border-radius:10px}
 details summary{cursor:pointer;color:var(--mut);font-size:12px}
-#toast{position:fixed;bottom:18px;left:50%;transform:translate(-50%,20px);opacity:0;transition:.2s;background:var(--fg);color:var(--bg);padding:10px 16px;border-radius:10px;z-index:20;max-width:calc(100% - 32px);pointer-events:none;box-shadow:0 8px 24px rgba(0,0,0,.2)}
+#toast{position:fixed;bottom:20px;left:50%;transform:translate(-50%,16px);opacity:0;transition:.2s;background:var(--fg);color:var(--bg);padding:11px 18px;border-radius:12px;z-index:40;max-width:calc(100% - 32px);pointer-events:none;box-shadow:0 12px 40px rgba(0,0,0,.35);font-weight:550}
 #toast.show{opacity:1;transform:translate(-50%,0)}#toast.err{background:var(--no);color:#fff}
-@media (max-width:520px){.logo span{display:none}.logo{font-size:22px}.hwrap{gap:6px}.tools select{flex:1}.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;padding:0 8px 8px}.hide-sm{display:none}.body{padding:8px}}
+@media (max-width:640px){
+  main{padding:14px;gap:12px}.hwrap{padding:10px 14px;gap:8px}.logo span{display:none}.hide-sm,.searchbox kbd,.note:not(.err){display:none}header.top button{padding:8px 12px}
+  .grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;padding:0 10px 14px}
+  .tabs{margin:0 -14px;padding:4px 14px 8px}.row2 .lab{min-width:100%}
+  .img{aspect-ratio:1/1}.price b{font-size:16px}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style></head><body>
-<header><div class="hwrap">
-  <div class="logo">🏎️ <span>Hot Wheels Watcher</span></div>
+<header class="top"><div class="hwrap">
+  <div class="logo"><i>🏎️</i><span>Hot Wheels <b>Watcher</b></span></div>
   <span class="pill" id="status"><span class="dot"></span><span>Connecting…</span></span>
-  <button class="ghost hide-sm" id="notif" onclick="enableNotifs()" hidden>🔔 Alerts</button>
-  <button id="checkBtn" onclick="checkNow()">↻ <span class="hide-sm">Check now</span></button>
-  <button class="ghost" onclick="drawer(true)" aria-label="Settings">⚙︎ <span class="hide-sm">Setup</span></button>
+  <button class="ghost hide-sm" id="notif" onclick="enableNotifs()" hidden>Enable alerts</button>
+  <button id="checkBtn" onclick="checkNow()">Check now</button>
+  <button class="ghost" onclick="drawer(true)">⚙ Setup</button>
 </div></header>
-
 <main id="main"></main>
-
 <div id="drawerWrap">
   <div class="scrim" onclick="drawer(false)"></div>
   <aside class="drawer" aria-label="Setup">
-    <header><h3>Setup</h3><button class="icon" onclick="drawer(false)" aria-label="Close">✕</button></header>
-
-    <div class="sec"><h4>Data Sources</h4>
-      <div id="sourcesList" style="display:grid;grid-template-columns:minmax(0,1fr);gap:10px"></div>
-    </div>
-
-    <div class="sec"><h4>Locations <span class="sm mut">(for Blinkit)</span></h4>
-      <div id="locList" style="display:grid;grid-template-columns:minmax(0,1fr);gap:6px"></div>
-      <div class="row"><input type="text" id="dPlace" placeholder="Pincode, address, coords or Maps link" onkeydown="event.key==='Enter'&&addLoc('d')"></div>
-      <div class="row"><input type="text" id="dName" placeholder="Name, e.g. Home" onkeydown="event.key==='Enter'&&addLoc('d')"><button id="dAdd" onclick="addLoc('d')">Add</button><button class="ghost" onclick="geo('dPlace')" title="Use my current location">📍</button></div>
-      <details><summary>Pincode or exact spot?</summary><p class="sm mut">A pincode works, but Blinkit stock depends on the store nearest your exact address. Right-click your home in Google Maps, click the coordinates to copy them, and paste here.</p></details>
+    <div class="dh"><h3>Setup</h3><button class="icon" onclick="drawer(false)" aria-label="Close">✕</button></div>
+    <div class="sec"><h4>Stores</h4><div id="sourcesList" style="display:grid;gap:10px"></div></div>
+    <div class="sec"><h4>Blinkit locations</h4>
+      <div id="locList" style="display:grid;gap:8px"></div>
+      <div class="row"><input type="text" id="dPlace" placeholder="Pincode, address, coords or Maps link" onkeydown="event.key==='Enter'&&addLoc()"><button class="ghost" onclick="geo('dPlace')" title="Use my current location" aria-label="Use my current location">📍</button></div>
+      <div class="row"><input type="text" id="dName" placeholder="Name, e.g. Home" onkeydown="event.key==='Enter'&&addLoc()"><button id="dAdd" onclick="addLoc()">Add location</button></div>
+      <details><summary>Why coordinates?</summary><p class="sm mut">Blinkit stock follows the store nearest the pin. A pincode works. Exact coordinates are better.</p></details>
     </div>
     <div class="sec"><h4>Alerts</h4>
-      <label class="switch"><input type="checkbox" id="notifChk" onchange="enableNotifs()"><span>Desktop alerts + sound<br><span class="sm mut">Needs this tab to stay open.</span></span></label>
+      <label class="switch"><input type="checkbox" id="notifChk" onchange="enableNotifs()"><span>Desktop alerts and a sound when a watched car comes in stock. This tab has to stay open.</span></label>
     </div>
-    <div class="sec"><h4>Cart &amp; ordering</h4>
-      <label class="switch"><input type="checkbox" id="ac" onchange="post('/api/settings',{autoCart:this.checked}).then(()=>toast(this.checked?'Auto-cart on for ★ watched models':'Auto-cart off'))"><span>Auto-add ★ watched models to cart<br><span class="sm mut">Adds them the moment they come into stock. Works best with one location, because Blinkit keeps one cart per delivery address.</span></span></label>
-      <div class="row"><button onclick="openCart()">🛒 Open cart in Blinkit</button><button class="ghost" onclick="post('/api/browser/hide').then(()=>toast('Browser hidden'))">Hide browser</button></div>
-      <p class="sm mut" style="margin:0">The first time, log in with your phone in the window that opens; it stays logged in. You always check out and pay yourself.</p>
+    <div class="sec"><h4>Blinkit cart</h4>
+      <label class="switch"><input type="checkbox" id="ac" onchange="post('/api/settings',{autoCart:this.checked}).then(()=>toast(this.checked?'Auto-cart on for watched cars':'Auto-cart off'))"><span>Auto-add watched cars when they come in stock. One location works best, because Blinkit keeps a cart per address.</span></label>
+      <div class="row"><button onclick="openCart()">Open cart in Blinkit</button><button class="ghost" onclick="post('/api/browser/hide').then(()=>toast('Browser hidden'))">Hide browser</button></div>
+      <p class="sm mut" style="margin:0">Log in once in the window that opens. Checkout and payment stay with you.</p>
     </div>
     <div class="sec"><h4>Activity</h4><pre id="log"></pre></div>
   </aside>
 </div>
 <div id="toast" role="status"></div>
-
 <script>
 const $=id=>document.getElementById(id);
 const ls={get(k,d){try{const v=localStorage.getItem(k);return v==null?d:JSON.parse(v)}catch{return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch{}}};
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const rupee=n=>'₹'+Number(n).toLocaleString('en-IN');
+const rupee=n=>'₹'+Number(n).toLocaleString('en-IN',{maximumFractionDigits:0});
 const ago=t=>{if(!t)return'never';const s=Math.round((Date.now()-t)/1000);return s<10?'just now':s<60?s+'s ago':s<3600?Math.round(s/60)+'m ago':Math.round(s/3600)+'h ago'};
-const NEW_MS=6*3600e3;
+const NEW_MS=6*3600e3, PAGE=24;
+const VIEWS=[
+  {id:'cars',label:'All cars',sub:'Mainline · Silver · Premium'},
+  {id:'mainline',label:'Mainline',sub:'MRP ₹179'},
+  {id:'silver',label:'Silver',sub:'MRP ₹299'},
+  {id:'premium',label:'Premium',sub:'MRP ₹549'},
+  {id:'amazon',label:'Amazon',sub:'₹600 and under'},
+  {id:'other',label:'Other',sub:'Trucks, packs, sets'}
+];
+const GROUPS={cars:['mainline','silver','premium'],mainline:['mainline'],silver:['silver'],premium:['premium'],amazon:['amazon'],other:['other']};
+const GROUP_META={
+  mainline:{title:'Mainline',blurb:'₹179 basics'},
+  silver:{title:'Silver Series',blurb:'₹299 · Silver Series, Pantone, Neon Speeder'},
+  premium:{title:'Premium',blurb:'₹549 · Car Culture, Pop Culture, Fast & Furious'},
+  amazon:{title:'Amazon',blurb:'Everything ₹600 and under'},
+  other:{title:'Everything else',blurb:'Monster trucks, track sets, multipacks, accessories'}
+};
+const srcColors={blinkit:'#0c831f',hamleys:'#c62828',firstcry:'#7b1fa2',amazon:'#e47911',funcorp:'#1565c0',crossword:'#2e7d32'};
 
-let S=null,firstLoad=true,busy=new Set();
-const ui=ls.get("ui",{tab:"all",stock:"in",sort:"smart",q:"",src:"all"});
-const saveUi=()=>ls.set("ui",{...ui,q:""});
-const emojiMap = { blinkit:"🟢", hamleys:"🔴", firstcry:"🟣", amazon:"🟠", funcorp:"🔵", crossword:"📗" };
-const srcColors = { blinkit:"#f8cb46", hamleys:"#c62828", firstcry:"#7b1fa2", amazon:"#ff9800", funcorp:"#1565c0", crossword:"#2e7d32" };
+let S=null,firstLoad=true,shown={};
+const ui=ls.get('ui',{});
+ui.view=GROUPS[ui.view]?ui.view:'cars';ui.q=ui.q||'';ui.stock=['in','watched','all'].includes(ui.stock)?ui.stock:'in';ui.sort=ui.sort||'smart';ui.src=ui.src||'all';
+const saveUi=()=>ls.set('ui',{view:ui.view,stock:ui.stock,sort:ui.sort,src:ui.src,q:ui.q});
 let alerted=new Set(ls.get('alerted',[]));
 
+const seriesOf=p=>p.series||'other';
+const storeTag=(id,name)=>`<span class="tag-store" style="--sc:${srcColors[id]||'#666'}" title="Sold by ${esc(name)}"><i>${esc(String(name).charAt(0).toUpperCase())}</i>${esc(name)}</span>`;
+const PIN='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg>';
+const locTag=(name,inStock)=>`<span class="tag-loc ${inStock?'':'x'}" title="${esc(name)}: ${inStock?'in stock':'sold out'}">${PIN}${esc(name)}</span>`;
+const nameOf=p=>p.name.replace(/^hot\s*wheels\s*/i,'');
+const shortErr=e=>{const line=String(e).split('\n').map(s=>s.trim()).find(s=>s&&!/^[─-▟]/.test(s));return (line||String(e)).replace(/\s+/g,' ').slice(0,160)};
 function toast(m,err){const t=$('toast');t.textContent=m;t.className='show'+(err?' err':'');clearTimeout(t._h);t._h=setTimeout(()=>t.className='',3500)}
 async function call(method,u,b){
   const r=await fetch(u,{method,headers:{'content-type':'application/json'},body:b&&JSON.stringify(b)});
@@ -181,275 +257,221 @@ async function call(method,u,b){
   if(!r.ok||j.error){toast(j.error||'Something went wrong',true);throw new Error(j.error)}
   load();return j}
 const post=(u,b)=>call('POST',u,b||{}),del=u=>call('DELETE',u);
-function drawer(o){$('drawerWrap').classList.toggle('open',o);if(o)setTimeout(()=>$('dPlace').focus(),250)}
-document.addEventListener('keydown',e=>{if(e.key==='Escape')drawer(false);if(e.key==='/'&&document.activeElement.tagName!=='INPUT'){e.preventDefault();$('q')?.focus()}});
+function drawer(o){$('drawerWrap').classList.toggle('open',o);if(o)setTimeout(()=>$('dPlace')?.focus({preventScroll:true}),250)}
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){drawer(false);if(document.activeElement?.id==='q')document.activeElement.blur()}
+  if(e.key==='/'&&!['INPUT','SELECT','TEXTAREA'].includes(document.activeElement.tagName)){e.preventDefault();$('q')?.focus()}});
 
-async function addLoc(p){
-  const btn=$(p+'Add'),place=$(p+'Place').value,name=$(p+'Name').value;
+async function addLoc(){
+  const btn=$('dAdd'),place=$('dPlace').value,name=$('dName').value;
   btn.disabled=true;const t=btn.textContent;btn.textContent='Finding…';
-  try{await post('/api/locations',{name,place});$(p+'Place').value=$(p+'Name').value='';toast('Location added — checking it now');ui.tab='all'}catch{}
+  try{await post('/api/locations',{name,place});$('dPlace').value=$('dName').value='';toast('Location added. Checking Blinkit there now.')}catch{}
   finally{btn.disabled=false;btn.textContent=t}}
-function geo(id){if(!navigator.geolocation)return toast('Location not available in this browser',true);
+function geo(id){if(!navigator.geolocation)return toast('Location is not available in this browser',true);
   toast('Getting your location…');
-  navigator.geolocation.getCurrentPosition(p=>{$(id).value=p.coords.latitude.toFixed(5)+', '+p.coords.longitude.toFixed(5);toast('Got it — now click Add')},e=>toast('Couldn\'t get location: '+e.message,true),{enableHighAccuracy:true,timeout:10000})}
-function removeLoc(id,name){if(confirm(`Stop watching "${name}"?`))del('/api/locations/'+id).then(()=>{if(ui.tab===id)ui.tab='all'})}
-function checkNow(){post('/api/check').then(()=>toast('Checking all sources…'))}
+  navigator.geolocation.getCurrentPosition(p=>{$(id).value=p.coords.latitude.toFixed(5)+', '+p.coords.longitude.toFixed(5);toast('Got it. Click Add location.')},e=>toast('Could not get location: '+e.message,true),{enableHighAccuracy:true,timeout:10000})}
+function removeLoc(id,name){if(confirm('Stop watching "'+name+'"?'))del('/api/locations/'+id)}
+function checkNow(){post('/api/check').then(()=>toast('Checking every store…'))}
 function openCart(){toast('Opening Blinkit…');post('/api/browser/cart').then(()=>toast('Blinkit opened in a new window'))}
-async function enableNotifs(){if(!('Notification'in window))return toast('Notifications aren\'t supported here',true);
-  const p=await Notification.requestPermission();toast(p==='granted'?'Alerts on':'Alerts blocked — allow them in browser settings',p!=='granted');render()}
+async function enableNotifs(){if(!('Notification'in window))return toast('Notifications are not supported here',true);
+  const p=await Notification.requestPermission();toast(p==='granted'?'Alerts on':'Alerts blocked. Allow them in the browser settings.',p!=='granted');render()}
 
-// ★ watching: star a product to watch its model name
 const modelName=n=>n.replace(/hot\s*wheels/i,'').replace(/\b(die[\s-]*cast|toy)\b.*$/i,'').replace(/\s+/g,' ').trim()||n;
 async function toggleWatch(name,watched){
-  if(watched){const m=S.models.find(m=>m.text===watched);if(m)await del('/api/models/'+m.id);toast(`Stopped watching "${watched}"`)}
-  else{const t=modelName(name);await post('/api/models',{text:t});toast(`★ Watching "${t}"${S.settings.autoCart?' — will auto-add to cart':''}`)}}
-function addModel(){const i=$('mAdd');if(!i.value.trim())return;post('/api/models',{text:i.value}).then(()=>{toast(`★ Watching "${i.value.trim()}"`);i.value=''})}
-
-async function cart(locationId,productId){
-  const k=locationId+':'+productId;busy.add(k);render();
-  try{await post('/api/cart',{locationId,productId});toast('Added to cart ✓ — open Setup → Open cart to check out')}catch{}
-  finally{busy.delete(k);render()}}
-
+  if(watched){const m=S.models.find(m=>m.text===watched);if(m)await del('/api/models/'+m.id);toast('Stopped watching "'+watched+'"')}
+  else{const t=modelName(name);await post('/api/models',{text:t});toast('Watching "'+t+'"'+(S.settings.autoCart?' and will auto-add it to the Blinkit cart':''))}}
+function addModel(){const i=$('mAdd');if(!i.value.trim())return;post('/api/models',{text:i.value}).then(()=>{toast('Watching "'+i.value.trim()+'"');i.value=''})}
 function beep(){try{const a=new AudioContext();[0,.18].forEach(d=>{const o=a.createOscillator(),g=a.createGain();o.connect(g);g.connect(a.destination);o.frequency.value=d?1175:880;g.gain.value=.12;o.start(a.currentTime+d);o.stop(a.currentTime+d+.15)})}catch{}}
 
-// Build item list: merge Blinkit locations + other sources
-function items() {
-  const map = new Map();
-  // Blinkit location-based results
-  const locs = ui.tab === 'all' ? S.locations : S.locations.filter(l => l.id === ui.tab);
-  for (const l of locs) {
-    for (const p of S.results[l.id]?.products || []) {
-      const key = 'blinkit:' + p.id;
-      let it = map.get(key);
-      if (!it) map.set(key, it = {...p, source:'blinkit', at: [], inStock: false, since: null});
-      it.at.push({loc: l, inStock: p.inStock, source:'blinkit'});
-      if (p.inStock) { it.inStock = true; it.since = Math.max(it.since||0, p.since||0)||null; it.state = 'available'; }
-      it.price = Math.min(it.price, p.price);
+function items(){
+  const map=new Map();
+  for(const l of S.locations){
+    for(const p of S.results[l.id]?.products||[]){
+      const key='blinkit:'+p.id;
+      let it=map.get(key);
+      if(!it)map.set(key,it={...p,source:'blinkit',at:[],inStock:false,since:null});
+      it.at.push({loc:l,inStock:p.inStock});
+      if(p.inStock){it.inStock=true;it.since=Math.max(it.since||0,p.since||0)||null;it.state='available'}
+      it.price=Math.min(it.price,p.price);
+      it.mrp=Math.max(it.mrp||0,p.mrp||p.price);
     }
   }
-  // Other sources (only shown on "All" tab since they're not location-specific)
-  if (ui.tab === 'all') {
-    for (const src of (S.sourcesArr || []).filter(s => s.id !== 'blinkit')) {
-      for (const p of S.results[src.id]?.products || []) {
-        const key = src.id + ':' + p.id;
-        let it = map.get(key);
-        if (!it) map.set(key, it = {...p, source: src.id, at: [], inStock: false, since: null});
-        it.at.push({loc: {id: src.id, name: src.name}, inStock: p.inStock, source: src.id});
-        if (p.inStock) { it.inStock = true; it.since = Math.max(it.since||0, p.since||0)||null; it.state = 'available'; }
-        it.price = Math.min(it.price, p.price);
-      }
+  for(const src of (S.sourcesArr||[]).filter(s=>s.id!=='blinkit')){
+    for(const p of S.results[src.id]?.products||[]){
+      const key=src.id+':'+p.id;
+      if(map.has(key))continue;
+      map.set(key,{...p,source:src.id,at:[{loc:{id:src.id,name:src.name},inStock:p.inStock}]});
     }
   }
   return [...map.values()];
 }
 
-// Count items per source (always from "all" perspective)
-function srcCounts() {
-  const counts = {};
-  for (const l of S.locations) {
-    const prods = S.results[l.id]?.products || [];
-    counts.blinkit = (counts.blinkit || 0) + prods.filter(p => p.inStock).length;
-  }
-  for (const src of (S.sourcesArr || []).filter(s => s.id !== 'blinkit')) {
-    const prods = S.results[src.id]?.products || [];
-    counts[src.id] = prods.filter(p => p.inStock).length;
-  }
-  return counts;
+function renderSetup(){
+  const anyChecking=(S.sourcesArr||[]).some(s=>s.checking);
+  const locErrs=S.locations.filter(l=>S.results[l.id]?.error);
+  const srcErrs=(S.sourcesArr||[]).filter(s=>s.id!=='blinkit'&&s.error);
+  const totalErrs=locErrs.length+srcErrs.length;
+  const nextVals=(S.sourcesArr||[]).filter(s=>s.nextRun).map(s=>Math.max(0,Math.round((s.nextRun-Date.now())/1000)));
+  const next=nextVals.length?Math.min(...nextVals):null;
+  $('status').innerHTML=anyChecking?'<span class="dot busy"></span>Checking…':
+    `<span class="dot ${totalErrs?'err':''}"></span>${totalErrs?totalErrs+' failed · ':''}${next!=null?(next>=60?'Next check '+Math.round(next/60)+'m':'Next check '+next+'s'):'Idle'}`;
+  $('checkBtn').disabled=anyChecking;$('checkBtn').textContent=anyChecking?'Checking…':'Check now';
+  const perm='Notification'in window?Notification.permission:'denied';
+  $('notif').hidden=perm!=='default';$('notifChk').checked=perm==='granted';$('notifChk').disabled=perm==='denied';
+  $('ac').checked=!!S.settings.autoCart;
+  $('locList').innerHTML=S.locations.map(l=>`<div class="locrow"><div><b>${esc(l.name)}</b><div class="sm mut">${esc(l.label||l.lat+', '+l.lon)}</div>${S.results[l.id]?.error?`<div class="sm" style="color:var(--no)">${esc(S.results[l.id].error)}</div>`:''}</div><button class="icon" onclick="removeLoc('${l.id}',${esc(JSON.stringify(l.name))})" aria-label="Remove">🗑</button></div>`).join('')||'<span class="sm mut">No Blinkit location yet. The other stores still update.</span>';
+  const lg=$('log');if(lg){const top=lg.scrollTop<5;lg.textContent=S.log.join('\n')||'Nothing yet.';if(top)lg.scrollTop=0}
+  $('sourcesList').innerHTML=(S.sourcesArr||[]).map(s=>`
+    <div class="srow">
+      <div class="top"><b>${s.emoji||''} ${esc(s.name)}</b>
+        <label class="tog"><input type="checkbox" ${s.enabled?'checked':''} aria-label="Enable ${esc(s.name)}" onchange="post('/api/sources/${s.id}/settings',{enabled:this.checked})"><span></span></label></div>
+      <div class="row" style="align-items:center">
+        <span class="sm mut">Every</span>
+        <select class="sm" onchange="post('/api/sources/${s.id}/settings',{intervalSec:+this.value})">
+          ${[[120,'2 min'],[900,'15 min'],[1800,'30 min'],[3600,'1 hour'],[21600,'6 hours']].map(([v,t])=>`<option value="${v}" ${s.intervalSec==v?'selected':''}>${t}</option>`).join('')}
+        </select>
+        <button class="ghost sm" style="padding:6px 12px" onclick="post('/api/sources/${s.id}/check')">Check now</button>
+      </div>
+      <div class="stat">${s.checking?'Checking…':(s.lastRun?'Last check '+ago(s.lastRun):'Not checked yet')}${s.error?` · <span style="color:var(--no)">${esc(shortErr(s.error))}</span>`:''}</div>
+    </div>`).join('');
 }
 
 function render(){
   if(!S)return;
-  const main=$('main'),focusId=document.activeElement?.id,selS=document.activeElement?.selectionStart;
-
-  // header status
-  const anyChecking = (S.sourcesArr||[]).some(s=>s.checking);
-  const locErrs=S.locations.filter(l=>S.results[l.id]?.error).length;
-  const srcErrs=(S.sourcesArr||[]).filter(s=>s.error).length;
-  const totalErrs=locErrs+srcErrs;
-  const nextRunVals = (S.sourcesArr||[]).filter(s=>s.nextRun).map(s=>Math.max(0,Math.round((s.nextRun-Date.now())/1000)));
-  const next = nextRunVals.length ? Math.min(...nextRunVals) : null;
-  $('status').innerHTML=anyChecking?'<span class="dot busy"></span>Checking…':
-    `<span class="dot ${totalErrs?'err':''}"></span>${totalErrs?totalErrs+' failed · ':''}${next !== null ? `Next check ${next>=60?Math.round(next/60)+'m':next+'s'}` : 'Idle'}`;
-  $('checkBtn').disabled=anyChecking||!S.locations.length;
-  const perm='Notification'in window?Notification.permission:'denied';
-  $('notif').hidden=perm!=='default';$('notifChk').checked=perm==='granted';$('notifChk').disabled=perm==='denied';
-  $('ac').checked=S.settings.autoCart;
-  $('locList').innerHTML=S.locations.map(l=>`<div class="locrow"><div><b>${esc(l.name)}</b><div class="sm mut" title="${esc(l.label)}">${esc(l.label||l.lat+', '+l.lon)}</div></div><button class="icon" onclick="removeLoc('${l.id}','${esc(l.name).replace(/'/g,"\\'")}')" aria-label="Remove">🗑</button></div>`).join('')||'<span class="sm mut">No locations yet.</span>';
-  const lg=$('log'),top=lg.scrollTop<5;lg.textContent=S.log.join('\n')||'Nothing yet.';if(top)lg.scrollTop=0;
-  const mlg=$('mainLog'); if(mlg){ const mtop=mlg.scrollTop<5; mlg.textContent=S.log.join('\n')||'Nothing yet.'; if(mtop)mlg.scrollTop=0; }
-
-  // Drawer: sources list
-  $('sourcesList').innerHTML = (S.sourcesArr||[]).map(s => `
-    <div style="border:1px solid var(--line); padding:10px; border-radius:8px">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px">
-        <b>${s.emoji} ${s.name}</b>
-        <label class="switch"><input type="checkbox" ${s.enabled?'checked':''} onchange="post('/api/sources/${s.id}/settings',{enabled:this.checked})"><span></span></label>
-      </div>
-      <div class="row" style="align-items:center">
-        <span class="sm mut">Check every:</span>
-        <select class="sm" onchange="post('/api/sources/${s.id}/settings',{intervalSec:this.value})">
-          <option value="120" ${s.intervalSec===120?'selected':''}>2 mins</option>
-          <option value="900" ${s.intervalSec===900?'selected':''}>15 mins</option>
-          <option value="1800" ${s.intervalSec===1800?'selected':''}>30 mins</option>
-          <option value="3600" ${s.intervalSec===3600?'selected':''}>1 hr</option>
-          <option value="21600" ${s.intervalSec===21600?'selected':''}>6 hrs</option>
-        </select>
-        <button class="ghost sm" onclick="post('/api/sources/${s.id}/check')">↻ Check</button>
-      </div>
-      <div class="sm mut" style="margin-top:4px">${s.checking?'Checking...':(s.lastRun?'Last checked: '+ago(s.lastRun):'Never checked')}${s.error?' (⚠️ Error)':''}</div>
-    </div>
-  `).join('');
-
-  // onboarding
-  if(!S.locations.length){
-    main.innerHTML=`<section class="hero"><div style="font-size:44px">🏎️</div><h2>Where should I look?</h2>
-      <p>Add your delivery location. I'll keep checking Blinkit for Hot Wheels there and tell you the moment something you want is in stock.</p>
-      <div class="row"><input type="text" id="hPlace" placeholder="Pincode, address, or coordinates" onkeydown="event.key==='Enter'&&addLoc('h')" autofocus>
-      <input type="text" id="hName" placeholder="Name (e.g. Home)" style="flex:0 1 150px" onkeydown="event.key==='Enter'&&addLoc('h')"></div>
-      <div class="row" style="justify-content:center;margin-top:10px"><button id="hAdd" onclick="addLoc('h')">Start watching</button><button class="ghost" onclick="geo('hPlace')">📍 Use my location</button></div>
-      <p class="sm" style="margin-top:14px">Tip: exact coordinates beat a pincode — stock depends on the nearest Blinkit store.</p></section>
-  </div><!--/main-col-->
-  <aside class="panel log-panel"><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;"><h4 style="margin:0;font-size:13px;text-transform:uppercase;letter-spacing:.04em;color:var(--mut);">Activity</h4><span class="sm mut">Live</span></div><pre id="mainLog" style="margin:0;flex:1;overflow:auto;font:12px/1.6 ui-monospace,Menlo,monospace;white-space:pre-wrap;background:var(--surface2);padding:12px;border-radius:8px; border:1px solid var(--line);"></pre></aside>
-  </div><!--/layout-->`;
-    return}
-
-  if(ui.tab!=='all'&&!S.locations.some(l=>l.id===ui.tab))ui.tab='all';
+  const focusId=document.activeElement?.id,selS=document.activeElement?.selectionStart;
+  renderSetup();
+  const locErrs=S.locations.filter(l=>S.results[l.id]?.error);
+  const srcErrs=(S.sourcesArr||[]).filter(s=>s.id!=='blinkit'&&s.error);
 
   const all=items();
-  // loaded = any source has returned products
-  const loaded = Object.keys(S.results).some(k => S.results[k]?.products);
-  const watchedIn=all.filter(p=>p.watched&&p.inStock),inStock=all.filter(p=>p.inStock);
-  const lastCheck=Math.max(0, ...(S.sourcesArr||[]).map(s => s.lastRun || 0));
-  const allItems=(()=>{const t=ui.tab;ui.tab='all';const r=items();ui.tab=t;return r})();
-  const wAll=allItems.filter(p=>p.watched&&p.inStock);
-  const counts=srcCounts();
-  const totalInStock=Object.values(counts).reduce((a,b)=>a+b,0);
-  const totalItems=allItems.length;
-  const activeSources=(S.sourcesArr||[]).filter(s=>s.enabled).length;
-
-  // filtering & sorting
+  const loaded=Object.keys(S.results).some(k=>S.results[k]?.products);
   const q=ui.q.trim().toLowerCase();
-  let list=all.filter(p=>(ui.stock==='all'||(ui.stock==='in'?p.inStock:p.watched))&&(!q||p.name.toLowerCase().includes(q))&&(ui.src==='all'||p.source===ui.src));
+  const matchQ=p=>!q||p.name.toLowerCase().includes(q);
+  const pool=all.filter(p=>GROUPS[ui.view].includes(seriesOf(p)));
+  const stores=(S.sourcesArr||[]).filter(s=>s.enabled&&pool.some(p=>p.source===s.id));
+  if(ui.src!=='all'&&!stores.some(s=>s.id===ui.src))ui.src='all';
+  const stockOk=p=>ui.stock==='all'||(ui.stock==='in'?p.inStock:!!p.watched);
+  const storeOk=p=>ui.src==='all'||p.source===ui.src;
   const isNew=p=>p.since&&Date.now()-p.since<NEW_MS;
   const smart=p=>(p.watched&&p.inStock?8:0)+(isNew(p)?4:0)+(p.inStock?2:0)+(p.watched?1:0);
-  list.sort(ui.sort==='price'?(a,b)=>a.price-b.price:ui.sort==='pricedesc'?(a,b)=>b.price-a.price:ui.sort==='name'?(a,b)=>a.name.localeCompare(b.name):(a,b)=>smart(b)-smart(a)||a.price-b.price);
-  const carted=new Set(S.carted);
+  const sortFn=ui.sort==='price'?(a,b)=>a.price-b.price:ui.sort==='pricedesc'?(a,b)=>b.price-a.price:ui.sort==='name'?(a,b)=>a.name.localeCompare(b.name):(a,b)=>smart(b)-smart(a)||a.name.localeCompare(b.name);
+  const stockIn=id=>all.filter(p=>seriesOf(p)===id&&p.inStock).length;
+  const multi=S.locations.length>1;
+
+  const buyBtn=p=>{
+    const srcName=(S.sourcesArr||[]).find(s=>s.id===p.source)?.name||p.source;
+    if(!p.inStock)return `<button class="ghost" disabled>${p.state==='coming_soon'?'Coming soon':'Sold out'}</button>`;
+    return `<a class="abtn" href="${esc(p.url)}" target="_blank" rel="noopener">Buy on ${esc(srcName)} ↗</a>`;
+  };
 
   const card=p=>{
     const off=p.mrp>p.price?Math.round((1-p.price/p.mrp)*100):0;
-    const isBlinkit = p.source === 'blinkit';
-    const locIn=p.at.find(a=>a.inStock)?.loc;const k=locIn&&locIn.id+':'+p.id;
-    const multi=S.locations.length>1;
-    const srcName = (S.sourcesArr||[]).find(s=>s.id===p.source)?.name || p.source;
-    const srcEmoji = emojiMap[p.source]||'📦';
-    const srcColor = srcColors[p.source]||'#555';
-
-    // Action button: "Add to cart" for Blinkit, "Buy on X" link for others
-    let btn;
-    if (!p.inStock) {
-      btn = `<button class="ghost" disabled>${p.state==='coming_soon'?'Coming soon':p.lastSeen&&p.state==='gone'?'Sold out · seen '+ago(p.lastSeen):'Sold out'}</button>`;
-    } else if (isBlinkit && locIn) {
-      const ck = locIn.id+':'+p.id;
-      btn = carted.has(ck) ? `<button class="added" disabled>✓ In cart</button>` :
-            busy.has(ck) ? `<button disabled>Adding…</button>` :
-            `<button onclick="cart('${locIn.id}','${p.id}')">Add to cart${multi&&ui.tab==='all'?` <span class="sm">· ${esc(locIn.name)}</span>`:''}</button>`;
-    } else {
-      btn = `<a class="abtn" href="${esc(p.url)}" target="_blank" rel="noopener">Buy on ${esc(srcName)} ↗</a>`;
-    }
-
-    return `<article class="card ${p.inStock?'':'out'} ${p.watched?'w':''}">
-      <div class="img"><img src="${esc(p.image)}" alt="" loading="lazy">
-        <div class="badges"><span class="b src" style="background:${srcColor};color:#fff">${srcEmoji} ${esc(srcName)}</span>${isNew(p)?'<span class="b new">New</span>':''}${!p.inStock?`<span class="b sold">${p.state==='coming_soon'?'Coming soon':'Sold out'}</span>`:off>=5?`<span class="b off">${off}% off</span>`:''}</div>
-        <button class="starbtn ${p.watched?'on':''}" title="${p.watched?'Watching "'+esc(p.watched)+'" — click to stop':'Watch this model'}" onclick="toggleWatch(${esc(JSON.stringify(p.name))},${p.watched?esc(JSON.stringify(p.watched)):'null'})">${p.watched?'★':'☆'}</button></div>
+    const srcName=(S.sourcesArr||[]).find(s=>s.id===p.source)?.name||p.source;
+    const series=seriesOf(p);
+    const mrpLine=p.mrp>p.price?`<s>${rupee(p.mrp)}</s>`:'';
+    return `<article class="card s-${series} ${p.inStock?'':'out'} ${p.watched?'w':''}">
+      <div class="img">${p.image?`<img src="${esc(p.image)}" alt="" loading="lazy" onerror="this.style.display='none'">`:'<span style="font-size:42px;opacity:.3">🏎️</span>'}
+        <div class="badges">${isNew(p)&&p.inStock?'<span class="b new">Just in</span>':''}${!p.inStock?'<span class="b sold">Sold out</span>':off>=5?`<span class="b off">${off}% off</span>`:''}</div>
+        <button class="starbtn ${p.watched?'on':''}" title="${p.watched?'Stop watching':'Watch this car'}" aria-label="${p.watched?'Stop watching':'Watch this car'}" onclick="toggleWatch(${esc(JSON.stringify(p.name))},${p.watched?esc(JSON.stringify(p.watched)):'null'})">${p.watched?'★':'☆'}</button>
+      </div>
       <div class="body">
-        <a class="name" href="${esc(p.url)}" target="_blank" rel="noopener" title="${esc(p.name)}">${esc(p.name.replace(/^hot\s*wheels\s*/i,''))}</a>
-        <div class="price"><b>${rupee(p.price)}</b>${p.mrp>p.price?`<s>${rupee(p.mrp)}</s>`:''}<span class="sm mut">${esc(p.unit||'')}</span></div>
-        ${isBlinkit&&multi&&ui.tab==='all'?`<div class="where">${p.at.map(a=>`<span class="loc ${a.inStock?'':'x'}">${esc(a.loc.name)}</span>`).join('')}</div>`:''}
-        <div class="act">${btn}</div></div></article>`};
+        <div class="tags">${storeTag(p.source,srcName)}</div>${p.source==='blinkit'?`<div class="tags">${p.at.map(a=>locTag(a.loc.name,a.inStock)).join('')}</div>`:''}
+        <a class="name" href="${esc(p.url)}" target="_blank" rel="noopener" title="${esc(p.name)}">${esc(nameOf(p))}</a>
+        <div class="price"><b>${rupee(p.price)}</b>${mrpLine}</div>
+        <div class="act">${buyBtn(p)}</div>
+      </div></article>`;
+  };
 
-  const tabCount=l=>{const r=S.results[l.id];return r?.products?r.products.filter(p=>p.inStock).length:'…'};
-  const errFor=ui.tab==='all'?S.locations.filter(l=>S.results[l.id]?.error):S.locations.filter(l=>l.id===ui.tab&&S.results[l.id]?.error);
+  const section=id=>{
+    const meta=GROUP_META[id];
+    const mine=all.filter(p=>seriesOf(p)===id&&storeOk(p));
+    const list=mine.filter(p=>stockOk(p)&&matchQ(p)).sort(sortFn);
+    const stockN=mine.filter(p=>p.inStock).length;
+    const head=`<div class="sec-h s-${id}"><h2>${esc(meta.title)}</h2><span class="meta"><b>${stockN} in stock</b> · ${mine.length} listed</span></div>`;
+    if(!loaded)return head+`<div class="grid">${'<div class="skel"></div>'.repeat(5)}</div>`;
+    if(!list.length){
+      const hiddenOut=mine.filter(p=>!p.inStock&&matchQ(p)).length;
+      const t=q?'Nothing matches that search':ui.stock==='watched'?'No watched cars here':ui.stock==='in'?'Nothing in stock right now':'Nothing listed yet';
+      const sub=ui.stock==='in'&&hiddenOut&&!q?`${hiddenOut} sold out · <a onclick="setUi('stock','all')">Show them</a>`:q?`<a onclick="setUi('q','')">Clear search</a>`:meta.blurb;
+      return head+`<div class="empty"><b>${t}</b>${sub}</div>`;
+    }
+    const lim=shown[id+ui.stock+ui.src+q]||PAGE;
+    const rest=list.length-lim;
+    const hiddenOut=ui.stock==='in'?mine.filter(p=>!p.inStock&&matchQ(p)).length:0;
+    return head+`<div class="grid">${list.slice(0,lim).map(card).join('')}</div>`
+      +(rest>0?`<div class="more"><button class="ghost" onclick="showMore('${id}')">Show ${Math.min(rest,PAGE*2)} more · ${rest} left</button></div>`:'')
+      +(hiddenOut?`<div class="sum">${hiddenOut} sold out hidden · <a onclick="setUi('stock','all')">Show them</a></div>`:'');
+  };
 
-  main.innerHTML=`
-  <div class="layout">
-  <div class="main-col" style="display:flex;flex-direction:column;gap:16px;">
-  <section class="stats">
-    <div class="stat ${wAll.length?'hot':''}"><div class="l">★ Watched in stock</div><div class="n">${S.models.length?wAll.length:'—'}</div>
-      <div class="sub ${wAll.length?'':'mut'}">${!S.models.length?'Tap ☆ on any car to watch it':wAll.length?esc(wAll.map(p=>modelName(p.name)).join(', ')):'Nothing you\'re watching is in stock yet'}</div></div>
-    <div class="stat"><div class="l">In stock</div><div class="n">${totalInStock}<span class="mut" style="font-size:15px;font-weight:600"> / ${totalItems}</span></div><div class="sub mut">across ${activeSources} source${activeSources>1?'s':''}</div></div>
-    <div class="stat"><div class="l">Last checked</div><div class="n" style="font-size:20px;padding:4px 0">${anyChecking?'Now…':ago(lastCheck)}</div><div class="sub mut">${activeSources} source${activeSources>1?'s':''} active</div></div>
-  </section>
-  <section class="panel">
-    <nav class="tabs" role="tablist">
-      <button class="tab ${ui.tab==='all'?'on':''}" onclick="setUi('tab','all')">All <span class="count">${totalInStock}</span></button>
-      ${S.locations.map(l=>`<button class="tab ${ui.tab===l.id?'on':''}" onclick="setUi('tab','${l.id}')" title="${esc(l.label)}">🟢 ${S.results[l.id]?.error?'⚠️ ':''}${esc(l.name)} <span class="count">${tabCount(l)}</span></button>`).join('')}
-      <button class="tab" onclick="drawer(true)" title="Add location">＋</button>
-    </nav>
-    <div class="tools">
-      <input type="search" id="q" placeholder="Search cars…  ( / )" value="${esc(ui.q)}" oninput="setUi('q',this.value)">
-      <div class="seg" role="group">${[['in','In stock'],['watched','★ Watched'],['all','All']].map(([v,t])=>`<button class="${ui.stock===v?'on':''}" onclick="setUi('stock','${v}')">${t}</button>`).join('')}</div>
-      <select onchange="setUi('sort',this.value)" aria-label="Sort">${[['smart','Best match'],['price','Price: low → high'],['pricedesc','Price: high → low'],['name','Name']].map(([v,t])=>`<option value="${v}" ${ui.sort===v?'selected':''}>${t}</option>`).join('')}</select>
-    </div>
+  // watched cars that can be bought right now
+  const hot=all.filter(p=>p.watched&&p.inStock).sort((a,b)=>(b.since||0)-(a.since||0));
+  const hotHtml=hot.length?`<section class="hot"><h2><span class="live"></span>${hot.length} watched ${hot.length>1?'cars are':'car is'} in stock right now</h2><div class="hotrow">${hot.slice(0,12).map(p=>{
+    const loc=p.at.find(a=>a.inStock)?.loc,srcName=(S.sourcesArr||[]).find(s=>s.id===p.source)?.name||p.source;
+    const act=`<a href="${esc(p.url)}" target="_blank" rel="noopener">Buy ↗</a>`;
+    return `<div class="hotcard">${p.image?`<img src="${esc(p.image)}" alt="" onerror="this.style.display='none'">`:''}<div class="t"><b>${esc(nameOf(p))}</b><div class="tags">${storeTag(p.source,srcName)}${p.source==='blinkit'?p.at.filter(a=>a.inStock).map(a=>locTag(a.loc.name,true)).join(''):''}<span class="sm" style="font-weight:700">${rupee(p.price)}</span></div></div>${act}</div>`}).join('')}</div></section>`:'';
 
-    <div class="watchbar" style="padding-bottom:8px">
-      <span class="sm mut">Source:</span>
-      <span class="src-chip chip ${ui.src==='all'?'on':''}" onclick="setUi('src','all')">All <span class="src-ct">${totalInStock}</span></span>
-      ${(S.sourcesArr||[]).filter(s=>s.enabled).map(s => `<span class="src-chip chip ${ui.src===s.id?'on':''}" style="opacity:${s.enabled?1:0.5}" onclick="setUi('src','${s.id}')">${s.emoji} ${s.name} <span class="src-ct">${counts[s.id]||0}</span>${s.checking?'<span class="sm" style="margin-left:2px">⟳</span>':''}</span>`).join('')}
-    </div>
+  const watched=S.models.map(m=>{
+    const hits=all.filter(p=>p.watched===m.text),inn=hits.filter(p=>p.inStock).length;
+    const st=inn?`<b style="color:var(--ok)">${inn} in stock</b>`:hits.length?'<span class="mut">sold out</span>':'<span class="mut">not listed</span>';
+    return `<span class="chip star">★ ${esc(m.text)} <span class="sm">${st}</span><button class="x" onclick="del('/api/models/${m.id}')" aria-label="Stop watching ${esc(m.text)}">✕</button></span>`;
+  }).join('')||'<span class="sm mut">Tap ☆ on any car, or type a name →</span>';
 
-    <div class="watchbar"><span class="sm mut">Watching:</span>
-      ${S.models.map(m=>{const hits=allItems.filter(p=>p.watched===m.text),inn=hits.filter(p=>p.inStock).length;
-        const st=inn?`<b style="color:var(--ok)">· ${inn} in stock</b>`:hits.some(p=>p.state==='coming_soon')?'<span class="mut">· coming soon</span>':hits.length?'<span class="mut">· sold out</span>':'<span class="mut">· not listed</span>';
-        return `<span class="chip star" title="${inn?'In stock now':hits.length?'Listed before, not in stock now':'Not listed on any source right now'}">★ ${esc(m.text)} ${st}<button onclick="del('/api/models/${m.id}')" aria-label="Stop watching ${esc(m.text)}">✕</button></span>`}).join('')}
-      <span class="addchip"><input type="text" id="mAdd" placeholder="Add a model name…" onkeydown="event.key==='Enter'&&addModel()"><button onclick="addModel()">＋</button></span></div>
-    ${errFor.map(l=>`<div class="meta" style="color:var(--no)">⚠️ ${esc(l.name)}: last check failed (${esc(S.results[l.id].error)}). Will retry automatically.</div>`).join('')}
-    ${!loaded?`<div class="grid">${'<div class="skel"></div>'.repeat(6)}</div>`:
-      list.length?`<div class="grid">${list.map(card).join('')}</div>`:
-      `<div class="empty">${q?`No cars match "${esc(ui.q)}".`:ui.stock==='watched'?'You\'re not watching anything here yet. Tap ☆ on a car to watch it.':ui.stock==='in'?`Nothing in stock right now. <a href="#" onclick="setUi('stock','all');return false">Show sold-out items</a>`:'No Hot Wheels listed here right now.'}</div>`}
-  </section>
-  </div><!--/main-col-->
-  <aside class="panel log-panel"><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;"><h4 style="margin:0;font-size:13px;text-transform:uppercase;letter-spacing:.04em;color:var(--mut);">Activity</h4><span class="sm mut">Live</span></div><pre id="mainLog" style="margin:0;flex:1;overflow:auto;font:12px/1.6 ui-monospace,Menlo,monospace;white-space:pre-wrap;background:var(--surface2);padding:12px;border-radius:8px; border:1px solid var(--line);"></pre></aside>
-  </div><!--/layout-->`;
-  if(focusId&&$(focusId)){$(focusId).focus();if(selS!=null)try{$(focusId).setSelectionRange(selS,selS)}catch{}}
+  const storeChips=ui.view==='amazon'?'':`<div class="row2"><span class="lab">Store</span>
+      <button class="chip btn ${ui.src==='all'?'on':''}" onclick="setUi('src','all')">All</button>
+      ${stores.map(s=>`<button class="chip btn ${ui.src===s.id?'on':''}" onclick="setUi('src','${s.id}')"><span class="mini" style="--sc:${srcColors[s.id]||'#666'}">${esc(s.name.charAt(0))}</span>${esc(s.name)} <span class="c">${pool.filter(p=>p.source===s.id&&p.inStock).length}</span></button>`).join('')}
+    </div>`;
+
+  const errs=[...locErrs.map(l=>`${l.name}: ${S.results[l.id].error}`),...srcErrs.map(s=>`${s.name}: ${s.error}`)];
+  const errHtml=errs.length?`<p class="note err"><span>⚠ ${esc(shortErr(errs[0]))}${errs.length>1?` (+${errs.length-1} more)`:''}</span><a href="#" onclick="drawer(true);return false">Details</a></p>`:'';
+  const amazonNote=ui.view==='amazon'?'<p class="note">Amazon has no reliable MRP, so this lists every Hot Wheels result at ₹600 or below across a few search pages.</p>':'';
+  const carsNote=ui.view==='cars'?'<p class="note">Lines are told apart by name first (Silver Series, Car Culture, Pop Culture, Fast &amp; Furious…) and by MRP second. Monster trucks, track sets and multipacks are kept out; find them under Other.</p>':'';
+
+  $('main').innerHTML=`
+    ${!S.locations.length&&ui.view!=='amazon'?`<div class="banner"><p><b>Blinkit needs a delivery location.</b> <span class="mut">The other stores are already being checked. Add a pin when you want Blinkit stock too.</span></p><button onclick="drawer(true)">Add location</button></div>`:''}
+    ${hotHtml}
+    <nav class="tabs" aria-label="Series">${VIEWS.map(v=>`<button class="tab ${ui.view===v.id?'on':''}" data-v="${v.id}" onclick="setUi('view','${v.id}')"><div class="k"><span>${v.label}</span><span class="n">${v.id==='cars'?stockIn('mainline')+stockIn('silver')+stockIn('premium'):stockIn(v.id)}</span></div><div class="s">${v.sub}</div></button>`).join('')}</nav>
+    <section class="panel">
+      <div class="tools">
+        <div class="searchbox"><input type="search" id="q" placeholder="Search cars" aria-label="Search cars" value="${esc(ui.q)}" oninput="setUi('q',this.value)"><kbd>/</kbd></div>
+        <div class="seg" role="group" aria-label="Stock filter">${[['in','In stock'],['watched','Watched'],['all','All']].map(([v,t])=>`<button class="${ui.stock===v?'on':''}" onclick="setUi('stock','${v}')">${t}</button>`).join('')}</div>
+        <select onchange="setUi('sort',this.value)" aria-label="Sort">${[['smart','Sort: Best first'],['name','Sort: Name'],['price','Sort: Price ↑'],['pricedesc','Sort: Price ↓']].map(([v,t])=>`<option value="${v}" ${ui.sort===v?'selected':''}>${t}</option>`).join('')}</select>
+      </div>
+      ${storeChips}
+      <div class="row2"><span class="lab">Watching</span>${watched}<span class="addchip"><input id="mAdd" placeholder="Add a model" aria-label="Add a model to watch" onkeydown="event.key==='Enter'&&addModel()"><button onclick="addModel()">Watch</button></span></div>
+      ${errHtml}${carsNote}${amazonNote}
+      ${GROUPS[ui.view].map(section).join('')}
+    </section>`;
+  if(focusId&&$(focusId)){$(focusId).focus();try{if(selS!=null)$(focusId).setSelectionRange(selS,selS)}catch{}}
 }
-function setUi(k,v){ui[k]=v;saveUi();render()}
+function setUi(k,v){ui[k]=v;if(k==='view'){ui.src='all'}saveUi();render();if(k==='view')window.scrollTo({top:0,behavior:'smooth'})}
+function showMore(id){const k=id+ui.stock+ui.src+ui.q.trim().toLowerCase();shown[k]=(shown[k]||PAGE)+PAGE*2;render()}
 
 function alertNew(){
   const hits=[];
-  // Check Blinkit locations
   for(const l of S.locations)for(const p of S.results[l.id]?.products||[]){const k=l.id+':'+p.id;
-    if(p.watched&&p.inStock){if(!alerted.has(k)){alerted.add(k);hits.push(`${modelName(p.name)} · ${l.name}`)}}
-    else alerted.delete(k)}
-  // Check other sources
+    if(p.watched&&p.inStock){if(!alerted.has(k)){alerted.add(k);hits.push(modelName(p.name)+' · '+l.name)}}else alerted.delete(k)}
   for(const src of (S.sourcesArr||[]).filter(s=>s.id!=='blinkit'))
     for(const p of S.results[src.id]?.products||[]){const k=src.id+':'+p.id;
-      if(p.watched&&p.inStock){if(!alerted.has(k)){alerted.add(k);hits.push(`${modelName(p.name)} · ${src.name}`)}}
-      else alerted.delete(k)}
+      if(p.watched&&p.inStock){if(!alerted.has(k)){alerted.add(k);hits.push(modelName(p.name)+' · '+src.name)}}else alerted.delete(k)}
   ls.set('alerted',[...alerted]);
-  const n=hits.length;
-  const totalWatched=[...alerted].length;
-  document.title=totalWatched?`(${totalWatched}) ★ In stock · Hot Wheels Watcher`:'Hot Wheels Watcher';
+  document.title=alerted.size?`(${alerted.size}) In stock · Hot Wheels`:'Hot Wheels Watcher';
   if(!hits.length||firstLoad)return;
-  beep();toast('★ In stock: '+hits.join(', '));
-  if('Notification'in window&&Notification.permission==='granted'){const n=new Notification('★ Hot Wheels in stock!',{body:hits.join('\n'),tag:'hw'});n.onclick=()=>{window.focus();n.close()}}
+  beep();toast('In stock: '+hits.join(', '));
+  if('Notification'in window&&Notification.permission==='granted'){const n=new Notification('Hot Wheels in stock',{body:hits.join('\n'),tag:'hw'});n.onclick=()=>{window.focus();n.close()}}
 }
+document.addEventListener('mousemove',e=>{const c=e.target.closest?.('.card');if(!c)return;const r=c.getBoundingClientRect();c.style.setProperty('--mx',(e.clientX-r.left)+'px');c.style.setProperty('--my',(e.clientY-r.top)+'px')});
 let lastJson='';
 async function load(){
   try{const r=await fetch('/api/state');const txt=await r.text();
     if(txt!==lastJson){lastJson=txt;S=JSON.parse(txt);render();alertNew()}firstLoad=false}
-  catch{$('status').innerHTML='<span class="dot err"></span>Server offline — run <code>npm start</code>'}}
+  catch{$('status').innerHTML='<span class="dot err"></span>Server offline. Run npm start'}}
 load();setInterval(load,3000);
-// keep the countdown ticking without re-rendering everything
 setInterval(()=>{
-  if(!S)return;
-  const anyChecking=(S.sourcesArr||[]).some(s=>s.checking);
-  if(anyChecking||!S.locations.length)return;
+  if(!S||(S.sourcesArr||[]).some(s=>s.checking))return;
   const vals=(S.sourcesArr||[]).filter(s=>s.nextRun).map(s=>Math.max(0,Math.round((s.nextRun-Date.now())/1000)));
   if(!vals.length)return;
   const n=Math.min(...vals);
-  const locErrs=S.locations.filter(l=>S.results[l.id]?.error).length;
-  const srcErrs=(S.sourcesArr||[]).filter(s=>s.error).length;
-  const totalErrs=locErrs+srcErrs;
+  const totalErrs=S.locations.filter(l=>S.results[l.id]?.error).length+(S.sourcesArr||[]).filter(s=>s.id!=='blinkit'&&s.error).length;
   $('status').innerHTML=`<span class="dot ${totalErrs?'err':''}"></span>${totalErrs?totalErrs+' failed · ':''}Next check ${n>=60?Math.round(n/60)+'m':n+'s'}`;
 },1000);
 </script></body></html>

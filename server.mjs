@@ -1,6 +1,7 @@
 import express from 'express';
 import { chromium } from 'playwright';
 import fs from 'fs';
+import path from 'path';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 
@@ -9,20 +10,25 @@ import hamleysSource from './sources/hamleys.mjs';
 import firstcrySource from './sources/firstcry.mjs';
 import amazonSource from './sources/amazon.mjs';
 import { createShopifySource } from './sources/shopify.mjs';
+import { seriesOf } from './sources/series.mjs';
 
 const PORT = process.env.PORT || 3000;
-const DIR = process.env.DATA_DIR || dirname(fileURLToPath(import.meta.url));
-const DATA = `${DIR}/data.json`;
-const PROFILE = `${DIR}/.browser-profile`;
-const UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0 Safari/537.36';
+const ROOT = dirname(fileURLToPath(import.meta.url));
+const DIR = path.resolve(process.env.DATA_DIR || ROOT);
+fs.mkdirSync(DIR, { recursive: true });
+const DATA = path.join(DIR, 'data.json');
+const PROFILE = path.join(DIR, '.browser-profile');
+const UA = process.platform === 'win32'
+  ? 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36'
+  : 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36';
 
 const allSources = [
   blinkitSource,
   hamleysSource,
   firstcrySource,
   amazonSource,
-  createShopifySource({ id: 'funcorp', name: 'FunCorp', emoji: '🔵', baseUrl: 'https://www.funcorp.in', defaultInterval: 3600 }),
-  createShopifySource({ id: 'crossword', name: 'Crossword', emoji: '📗', baseUrl: 'https://www.crossword.in', defaultInterval: 3600 })
+  createShopifySource({ id: 'funcorp', name: 'FunCorp', emoji: '🔵', baseUrl: 'https://www.funcorp.in', collection: 'hot-wheels', defaultInterval: 3600 }),
+  createShopifySource({ id: 'crossword', name: 'Crossword', emoji: '📗', baseUrl: 'https://www.crossword.in', collection: 'hotwheels', defaultInterval: 3600 })
 ];
 
 const defaults = { 
@@ -59,6 +65,7 @@ const save = () => fs.writeFileSync(DATA, JSON.stringify(db, null, 2));
 const results = {}; // locationId or sourceId -> {checkedAt, error, products}
 let log = [];
 const carted = new Map();
+const brief = (e) => String(e?.message || e).split('\n').map(s => s.trim()).filter(s => s && !/^[\u2550\u2551\u2554\u2557\u255a\u255d\u2560\u2563\u2566\u2569\u256c]/.test(s)).slice(0, 2).join(' ').slice(0, 220);
 const note = (m) => { log.unshift(`${new Date().toLocaleTimeString()}  ${m}`); log = log.slice(0, 300); console.log(m); };
 
 const sState = {};
@@ -125,6 +132,7 @@ async function processProducts(runId, locName, products, prev, stateObj) {
   for (const old of prev?.products || []) {
     if (!products.some(p => p.id === old.id)) products.push({ ...old, inStock: false, state: 'gone', watched: watchedBy(old) });
   }
+  for (const p of products) p.series = seriesOf(p);
   for (const pr of products) {
     const was = prev?.products?.find(x => x.id === pr.id);
     pr.since = pr.inStock ? (was?.inStock ? was.since : prev?.products ? Date.now() : null) : null;
@@ -168,17 +176,17 @@ async function checkSource(src) {
               const key = `${loc.id}:${pr.id}`;
               if (carted.has(key)) continue;
               carted.set(key, Date.now());
-              await exclusive(() => addToCart(loc, pr)).catch(e => { carted.delete(key); note(`⚠️ Auto-cart failed for ${pr.name}: ${e.message}`); });
+              await exclusive(() => addToCart(loc, pr)).catch(e => { carted.delete(key); note(`⚠️ Auto-cart failed for ${pr.name}: ${brief(e)}`); });
             }
           }
         } catch (e) {
-          results[loc.id] = { ...prev, checkedAt: Date.now(), error: e.message };
+          results[loc.id] = { ...prev, checkedAt: Date.now(), error: brief(e) };
           if (e.message.includes('too many requests') || e.name === 'Blocked') {
             st.backoff = Math.min(st.backoff * 2, 16);
             note(`⏸ Blinkit blocked searches. Waiting longer.`);
             blocked = true; break;
           }
-          note(`⚠️ ${loc.name}: ${e.message}`);
+          note(`⚠️ ${loc.name}: ${brief(e)}`);
           await exclusive(closeBrowser);
         }
         await new Promise(r => setTimeout(r, 1000 + Math.random() * 1500));
@@ -192,8 +200,8 @@ async function checkSource(src) {
           : await src.check({ db, note });
         await processProducts(src.id, src.name, products, prev, st);
       } catch (e) {
-        results[src.id] = { ...prev, checkedAt: Date.now(), error: e.message };
-        note(`⚠️ ${src.name}: ${e.message}`);
+        results[src.id] = { ...prev, checkedAt: Date.now(), error: brief(e) };
+        note(`⚠️ ${src.name}: ${brief(e)}`);
         if (src.id === 'amazon') await exclusive(closeBrowser);
       }
     }
@@ -243,8 +251,7 @@ async function resolvePlace(place) {
 
 const app = express();
 app.use(express.json());
-const __dirname = dirname(fileURLToPath(import.meta.url));
-app.use(express.static(`${__dirname}/public`));
+app.use(express.static(path.join(ROOT, 'public')));
 const uid = () => Math.random().toString(36).slice(2, 9);
 const api = (fn) => (req, res) => Promise.resolve().then(() => fn(req, res)).catch(e => res.status(400).json({ error: e.message }));
 

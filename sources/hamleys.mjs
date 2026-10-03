@@ -1,48 +1,47 @@
+const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36';
+const API = 'https://hamleys.in/ext/search/application/api/v1.0/collections/hot-wheels/items';
+
+function fromItem(it) {
+  const price = Number(it.price?.effective?.min);
+  const mrp = Number(it.price?.marked?.min) || price;
+  if (!it.uid || !it.name || !price) return null;
+  const inStock = it.sellable !== false;
+  return {
+    id: String(it.uid),
+    name: it.name,
+    price, mrp, inStock,
+    state: inStock ? 'available' : 'gone',
+    image: it.medias?.[0]?.url || '',
+    url: `https://hamleys.in/product/${it.slug}`,
+    source: 'hamleys'
+  };
+}
+
 export default {
   id: 'hamleys',
   name: 'Hamleys',
   emoji: '🔴',
-  defaultInterval: 21600, // 6 hours
+  defaultInterval: 21600,
   async check() {
-    const res = await fetch('https://www.hamleys.in/brands/hot-wheels', { headers: { 'user-agent': 'hw-watcher/1.0' } });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const html = await res.text();
-    
     const products = [];
-    const match = html.match(/<script[^>]*type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/g);
-    if (!match) return products;
-    
-    for (const tag of match) {
-      try {
-        const inner = tag.replace(/<script[^>]*>|<\/script>/g, '');
-        const data = JSON.parse(inner);
-        const list = Array.isArray(data) ? data : [data];
-        
-        for (const item of list) {
-          if (item['@type'] === 'CollectionPage' && item.mainEntity?.itemListElement) {
-            for (const el of item.mainEntity.itemListElement) {
-              const p = el.item;
-              if (p && p['@type'] === 'Product') {
-                const inStock = p.offers?.availability === 'https://schema.org/InStock';
-                products.push({
-                  id: p.url.split('-').pop() || p.url, // Extract ID from URL slug
-                  name: p.name,
-                  price: Number(p.offers?.price || 0),
-                  mrp: Number(p.offers?.price || 0),
-                  inStock: inStock,
-                  state: inStock ? 'available' : 'gone',
-                  image: p.image,
-                  url: p.url,
-                  source: 'hamleys'
-                });
-              }
-            }
-          }
-        }
-      } catch (e) {
-        // ignore parse errors for a single script block
+    const seen = new Set();
+    let pageId = '*';
+    for (let n = 0; n < 8; n++) {
+      const res = await fetch(`${API}?page_id=${encodeURIComponent(pageId)}&page_size=12`, {
+        headers: { 'user-agent': UA, accept: 'application/json' }
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+      for (const it of data.items || []) {
+        const p = fromItem(it);
+        if (!p || seen.has(p.id)) continue;
+        seen.add(p.id);
+        products.push(p);
       }
+      if (!data.page?.has_next) break;
+      pageId = data.page.next_id;
     }
+    if (!products.length) throw new Error('Hamleys returned no products');
     return products;
   }
 };

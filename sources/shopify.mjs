@@ -1,40 +1,46 @@
-export function createShopifySource({ id, name, emoji, baseUrl, defaultInterval }) {
+const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36';
+
+function money(v) {
+  const n = Number(v);
+  return Number.isFinite(n) && n > 0 ? n : null;
+}
+
+export function createShopifySource({ id, name, emoji, baseUrl, collection, defaultInterval }) {
   return {
-    id,
-    name,
-    emoji,
-    defaultInterval,
-    async check({ db }) {
+    id, name, emoji, defaultInterval,
+    async check() {
       const products = [];
       const seen = new Set();
-      
-      const queries = ['hot wheels', 'hot wheels premium', 'hot wheels 5 pack', 'hot wheels track'];
-      for (const query of queries) {
-        const u = `${baseUrl}/search/suggest.json?q=${encodeURIComponent(query)}&resources[type]=product&resources[limit]=10`;
-        const res = await fetch(u, { headers: { 'user-agent': 'hw-watcher/1.0' } });
+      for (let page = 1; page <= 6; page++) {
+        const res = await fetch(`${baseUrl}/collections/${collection}/products.json?limit=250&page=${page}`, {
+          headers: { 'user-agent': UA, accept: 'application/json' }
+        });
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const data = await res.json();
-        
-        for (const p of data.resources?.results?.products || []) {
-          if (seen.has(p.id)) continue;
-          seen.add(p.id);
-          
-          // Must match "hot wheels"
-          if (!/hot\s*wheels/i.test(p.title) && !/hot\s*wheels/i.test(p.vendor)) continue;
-          
+        const list = (await res.json()).products || [];
+        for (const p of list) {
+          const key = String(p.id);
+          if (seen.has(key)) continue;
+          seen.add(key);
+          const variants = p.variants || [];
+          const live = variants.find(v => v.available) || variants[0];
+          if (!live) continue;
+          const price = money(live.price);
+          if (!price) continue;
           products.push({
-            id: String(p.id),
+            id: key,
             name: p.title,
-            price: Number(p.price),
-            mrp: p.compare_at_price_min ? Number(p.compare_at_price_min) : Number(p.price),
-            inStock: p.available,
-            state: p.available ? 'available' : 'gone',
-            image: p.image || p.featured_image?.url,
-            url: baseUrl + p.url.split('?')[0],
+            price,
+            mrp: money(live.compare_at_price) || price,
+            inStock: variants.some(v => v.available),
+            state: variants.some(v => v.available) ? 'available' : 'gone',
+            image: p.images?.[0]?.src || '',
+            url: `${baseUrl}/products/${p.handle}`,
             source: id
           });
         }
+        if (list.length < 250) break;
       }
+      if (!products.length) throw new Error(`${name} returned no products`);
       return products;
     }
   };

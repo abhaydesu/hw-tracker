@@ -12,5 +12,6 @@ npm start                                        # then open http://localhost:30
 - **Alerts:** click "Enable alerts" for desktop notifications and a beep. The dashboard tab has to stay open.
 - **Cart:** the app runs its own Chrome profile (`.browser-profile/`). "Open cart in Blinkit" shows that window, where you log in once and pay. It never pays for you.
 - Blinkit keeps one cart per delivery location, so auto-cart is best used with a single location.
-- State lives in `data.json`. The minimum check interval is 30 seconds.
-- To run a second copy without touching your data (for example, for testing): `PORT=3199 DATA_DIR=/some/dir npm start`.
+- **Series:** the parser (`sources/series.mjs`) tells lines apart by name first (Silver Series, Pantone, Car Culture, Pop Culture, Fast & Furious, Mario Kart…) and by MRP second: Mainline ₹179 (also the older ₹167 and `n/250` numbering), Silver ₹299, Premium ₹549. Monster trucks, Track Fleet, track sets, multipacks and accessories are kept out of all three and shown under Other, even when they share a price. Amazon is a separate list of everything at ₹600 or below.
+- State lives in `data.json`. Paths work the same on Windows and macOS. The minimum check interval is 30 seconds.
+- To run a second copy without touching your data, set `PORT` and `DATA_DIR` before `npm start`. On Windows Command Prompt: `set PORT=3199` then `set DATA_DIR=C:\temp\hw` then `npm start`. On PowerShell: `$env:PORT=3199; $env:DATA_DIR='C:\temp\hw'; npm start`.
