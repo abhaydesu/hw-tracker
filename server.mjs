@@ -9,8 +9,9 @@ import blinkitSource from './sources/blinkit.mjs';
 import hamleysSource from './sources/hamleys.mjs';
 import firstcrySource from './sources/firstcry.mjs';
 import amazonSource from './sources/amazon.mjs';
+import bigbasketSource from './sources/bigbasket.mjs';
 import { createShopifySource } from './sources/shopify.mjs';
-import { seriesOf } from './sources/series.mjs';
+import { classify } from './sources/series.mjs';
 
 const PORT = process.env.PORT || 3000;
 const ROOT = dirname(fileURLToPath(import.meta.url));
@@ -27,6 +28,7 @@ const allSources = [
   hamleysSource,
   firstcrySource,
   amazonSource,
+  bigbasketSource,
   createShopifySource({ id: 'funcorp', name: 'FunCorp', emoji: '🔵', baseUrl: 'https://www.funcorp.in', collection: 'hot-wheels', defaultInterval: 3600 }),
   createShopifySource({ id: 'crossword', name: 'Crossword', emoji: '📗', baseUrl: 'https://www.crossword.in', collection: 'hotwheels', defaultInterval: 3600 })
 ];
@@ -83,7 +85,7 @@ async function openBrowser(wantHeaded = false) {
   if (ctx && headed === wantHeaded && uses < 200) return page;
   await closeBrowser();
   headed = wantHeaded; uses = 0;
-  const c = ctx = await chromium.launchPersistentContext(PROFILE, { headless: !wantHeaded, userAgent: UA, viewport: { width: 1280, height: 850 } });
+  const c = ctx = await chromium.launchPersistentContext(PROFILE, { channel: 'chromium', headless: !wantHeaded, userAgent: UA, args: ['--disable-blink-features=AutomationControlled'], viewport: { width: 1280, height: 850 } });
   c.on('close', () => { if (ctx === c) { ctx = null; page = null; } });
   page = ctx.pages()[0] || await ctx.newPage();
   return page;
@@ -132,7 +134,7 @@ async function processProducts(runId, locName, products, prev, stateObj) {
   for (const old of prev?.products || []) {
     if (!products.some(p => p.id === old.id)) products.push({ ...old, inStock: false, state: 'gone', watched: watchedBy(old) });
   }
-  for (const p of products) p.series = seriesOf(p);
+  for (const p of products) Object.assign(p, classify(p));
   for (const pr of products) {
     const was = prev?.products?.find(x => x.id === pr.id);
     pr.since = pr.inStock ? (was?.inStock ? was.since : prev?.products ? Date.now() : null) : null;
@@ -195,14 +197,14 @@ async function checkSource(src) {
       const prev = results[src.id];
       try {
         uses++;
-        const products = src.id === 'amazon' 
+        const products = ['amazon', 'bigbasket'].includes(src.id)
           ? await exclusive(() => src.check({ db, openBrowser, note }))
           : await src.check({ db, note });
         await processProducts(src.id, src.name, products, prev, st);
       } catch (e) {
         results[src.id] = { ...prev, checkedAt: Date.now(), error: brief(e) };
         note(`⚠️ ${src.name}: ${brief(e)}`);
-        if (src.id === 'amazon') await exclusive(closeBrowser);
+        if (['amazon', 'bigbasket'].includes(src.id)) await exclusive(closeBrowser);
       }
     }
     if (!blocked) st.backoff = 1;
