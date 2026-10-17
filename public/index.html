@@ -294,7 +294,7 @@ const MODE_ICONS={
   category:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>',
   seller:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l1.5-5h15L21 9"/><path d="M4 9v11h16V9"/><path d="M3 9h18"/><path d="M9 20v-6h6v6"/></svg>',
   location:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg>'};
-const FIXED_COLORS={blinkit:'#0c831f',hamleys:'#c62828',firstcry:'#7b1fa2',amazon:'#e47911',funcorp:'#1565c0',crossword:'#2e7d32',bigbasket:'#84c225'};
+const FIXED_COLORS={blinkit:'#0c831f',hamleys:'#c62828',firstcry:'#7b1fa2',amazon:'#e47911',funcorp:'#1565c0',crossword:'#2e7d32'};
 const srcColor=id=>FIXED_COLORS[id]||'#'+[...String(id)].reduce((h,c)=>(h*31+c.charCodeAt(0))>>>0,7).toString(16).padStart(6,'0').slice(0,6);
 const PIN='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg>';
 
@@ -566,7 +566,7 @@ function render(){
     <section class="hero">
       <span class="eyebrow"><span class="dot ${loaded?'':'busy'}"></span>${loaded?`${live} of ${sources.length} stores reporting · ${S.locations.length} Blinkit location${S.locations.length===1?'':'s'}`:'Loading the first check…'}</span>
       <h1>Every Hot Wheels drop, from every store, in <mark>one place</mark>.</h1>
-      <p class="lede">Live stock across Blinkit, Amazon, BigBasket and the specialist stores. Sorted into Mainline, Silver and Premium, and split by seller or by delivery location.</p>
+      <p class="lede">Live stock across Blinkit, Amazon and the specialist stores. Sorted into Mainline, Silver and Premium, and split by seller or by delivery location.</p>
     </section>
     <div class="bento">
       <div class="tile"><span class="k"><span class="num" style="--nc:var(--brand)">1</span>In stock now</span><span class="n">${inAll.length}</span><span class="s">across ${new Set(inAll.map(p=>p.source)).size} stores</span></div>

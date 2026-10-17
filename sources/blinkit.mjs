@@ -56,7 +56,7 @@ export default {
   async check({ db, openBrowser, note, loc }) {
     if (!loc) throw new Error("Blinkit requires a location");
     const p = await openBrowser();
-    // The browser is shared with Amazon and BigBasket, so the page may be on another origin. fetch() needs blinkit.com.
+    // The browser is shared with Amazon, so the page may be on another origin. fetch() needs blinkit.com.
     if (!new URL(p.url() === 'about:blank' ? 'https://x.invalid' : p.url()).hostname.endsWith('blinkit.com'))
       await p.goto('https://blinkit.com/', { waitUntil: 'domcontentloaded', timeout: 45000 });
     const found = new Map();

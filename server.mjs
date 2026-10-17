@@ -9,7 +9,6 @@ import blinkitSource from './sources/blinkit.mjs';
 import hamleysSource from './sources/hamleys.mjs';
 import firstcrySource from './sources/firstcry.mjs';
 import amazonSource from './sources/amazon.mjs';
-import bigbasketSource from './sources/bigbasket.mjs';
 import { createShopifySource } from './sources/shopify.mjs';
 import { classify } from './sources/series.mjs';
 
@@ -28,7 +27,6 @@ const allSources = [
   hamleysSource,
   firstcrySource,
   amazonSource,
-  bigbasketSource,
   createShopifySource({ id: 'funcorp', name: 'FunCorp', emoji: '🔵', baseUrl: 'https://www.funcorp.in', collection: 'hot-wheels', defaultInterval: 3600 }),
   createShopifySource({ id: 'crossword', name: 'Crossword', emoji: '📗', baseUrl: 'https://www.crossword.in', collection: 'hotwheels', defaultInterval: 3600 })
 ];
@@ -197,14 +195,14 @@ async function checkSource(src) {
       const prev = results[src.id];
       try {
         uses++;
-        const products = ['amazon', 'bigbasket'].includes(src.id)
+        const products = src.id === 'amazon'
           ? await exclusive(() => src.check({ db, openBrowser, note }))
           : await src.check({ db, note });
         await processProducts(src.id, src.name, products, prev, st);
       } catch (e) {
         results[src.id] = { ...prev, checkedAt: Date.now(), error: brief(e) };
         note(`⚠️ ${src.name}: ${brief(e)}`);
-        if (['amazon', 'bigbasket'].includes(src.id)) await exclusive(closeBrowser);
+        if (src.id === 'amazon') await exclusive(closeBrowser);
       }
     }
     if (!blocked) st.backoff = 1;
